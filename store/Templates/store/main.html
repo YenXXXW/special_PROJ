@@ -15,42 +15,8 @@
 </style>
 <body>
 	
-    <!-- <nav class="navbar">
-        <div class="logo">Wai Yan Cane Handcraft-Shop</div>
-        <ul class="nav-links">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Shop</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
-			<li>Dropdown</li>
-			<li class="dropdown">
-				<a href="javascript:void(0)" class="dropbtn"><i class="arrow down"></i></a>
-				<div class="dropdown-content">
-				  <a href="#">Store 1</a>
-				  <a href="#">Store 2</a>
-				  <a href="#">Store 3</a>
-				</div>
-			  </li>		  
-		</ul>
-	</div>
-        </ul>
-		<form class="form-inline my-2 my-lg-0">
-			<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-			<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-		  </form>
-		  
-		  <div class="form-inline my-2 my-lg-0">
-			<a href="#"class="btn btn-warning">Login</a>
-			
-			<a href="{% url 'cart' %}">
-			   <img  id="cart-icon" src="{% static 'images/cart.png' %}">
-		   </a>
-		   <p id="cart-total">0</p>
-   
-	   </div>
-    </nav>
-	 -->
-	 <nav class="navbar navbar-expand-lg navbar-light bg-light">
+	{% comment %} Bootstrap navbar {% endcomment %}
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		<a class="navbar-brand" href="#">Navbar</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		  <span class="navbar-toggler-icon"></span>
@@ -66,11 +32,11 @@
 			</li>
 			<li class="nav-item dropdown">
 			  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				Dropdown
+				dropdowns
 			  </a>
 			  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 				<a class="dropdown-item" href="#">Action</a>
-				<a class="dropdown-item" href="#">Another action</a>
+				<a class="dropdown-item" href="#">Another</a>
 				<div class="dropdown-divider"></div>
 				<a class="dropdown-item" href="#">Something else here</a>
 			  </div>
@@ -84,7 +50,7 @@
 			<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
 		  </form>
 		</div>
-	  </nav>
+	</nav>
 	<hr>
      <div class="container">
             <br>
