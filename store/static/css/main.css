@@ -1,10 +1,45 @@
 body{
-	background-color: hsl(0, 0%, 98%);
+	background-color:  #c8beb6!important;
 }
 
 h1,h2,h3,h4,h5,h6{
 	color:hsl(0, 0%, 30%);
 }
+
+nav {
+	padding-left: 6%;
+	padding-right: 6%;
+	height: 100px;
+}
+
+.my-container {
+	padding: 0;
+	position: relative;
+}
+
+.products-container-bg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	border-bottom: 2px  solid transparent;
+	box-shadow: 0 0 8px 8px white inset;
+}
+
+.products-container {
+	padding-left: 6%;
+	padding-right: 6%;
+	padding-top: 50vh;
+}
+
+.products {
+	background-image: linear-gradient(to bottom, rgb(255, 246, 246m 0), rgba(0, 0, 0, 0.5));
+	backdrop-filter: blur(10px);
+	background-size: 100% 300px; /* adjust the height to your needs */
+	background-position: 0% 100%;
+	
+}
+
 
 .box-element{
 	box-shadow:hsl(0, 0%, 80%) 0 0 16px;
@@ -26,7 +61,7 @@ h1,h2,h3,h4,h5,h6{
 }
 
 .bg-dark{
-	background-color: #4f868c!important;
+	background-color: #16457c!important;
 }
 
 #cart-icon{
@@ -47,15 +82,17 @@ h1,h2,h3,h4,h5,h6{
 }
 
 .col-lg-4, .col-lg-6, .col-lg-8, .col-lg-12{
-	margin-top: 10px;
+	margin-bottom: 30px;
 }
 
 .btn{
 	border-radius: 0;
 }
 
+
 .row-image{
-	width: 100px;
+	width: 90px;
+	height: 55px
 }
 
 .form-field{
