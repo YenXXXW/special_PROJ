@@ -36,10 +36,19 @@ class Product(models.Model):
   shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='products')
   category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
   quantity = models.IntegerField(default=0)
-  # image
+  image = models.ImageField(null=True, blank=True)
 
   def __str__(self):
     return self.name
+  
+  @property
+  def imageUrl(self):
+    try:
+      url = self.image.url
+    except:
+      url = ''
+    return url
+    
   
 class Cart (models.Model):
   customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)
