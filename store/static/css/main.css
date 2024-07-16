@@ -1,5 +1,5 @@
 body{
-	background-color:  #c8beb6!important;
+	background-color:  #f0f0f0!important;
 }
 
 h1,h2,h3,h4,h5,h6{
@@ -14,22 +14,27 @@ nav {
 
 .my-container {
 	padding: 0;
+	margin: 0;
+	width: 100vw;
 	position: relative;
 }
 
 .products-container-bg {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100vw;
+	width: 60vw;
 	border-bottom: 2px  solid transparent;
 	box-shadow: 0 0 8px 8px white inset;
+	/* center a div */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 30px auto;
 }
+
+
 
 .products-container {
 	padding-left: 6%;
 	padding-right: 6%;
-	padding-top: 50vh;
 }
 
 .products {
