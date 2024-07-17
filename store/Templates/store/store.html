@@ -1,6 +1,22 @@
 {% extends 'store/main.html' %}
 {% load static %}
 {% block content %}
-<h3>Store</h3>
+<div class="row gx-5">
+    {% for product in products %}
+    <div class="col-lg-3">
+        <div class="box-element product">
+            <img class="thumbnail" src="{{ product.imageUrl }}">
+            <h6><strong>{{product.name}}</strong></h6>
+        
+            
+				{% comment %} <hr> {% endcomment %}
 
+				{% comment %} <button  class="btn btn-outline-secondary add-btn">Add to Cart</button>
+				<a class="btn btn-outline-success" href="#">View</a>
+				<h4 style="display: inline-block; float: right"><strong>{{product.price}}</strong></h4> {% endcomment %}
+
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {% endblock content %}
