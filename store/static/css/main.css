@@ -69,6 +69,14 @@ nav {
 	background-color: #16457c!important;
 }
 
+.nav-search {
+	width: 60%;
+}
+
+#avatarIcon {
+	width:50px;
+}
+
 #cart-icon{
 	width:25px;
 	display: inline-block;
