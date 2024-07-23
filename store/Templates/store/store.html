@@ -1,22 +1,30 @@
 {% extends 'store/main.html' %}
 {% load static %}
 {% block content %}
-<div class="row gx-5">
-    {% for product in products %}
-    <div class="col-lg-3">
-        <div class="box-element product">
-            <img class="thumbnail" src="{{ product.imageUrl }}">
-            <h6><strong>{{product.name}}</strong></h6>
-        
-            
-				{% comment %} <hr> {% endcomment %}
+<div class="my-container">
+    <img src="{% static 'image/products-container-bg-8.png' %}" class="products-container-bg">
+    
+    <div class="products-container">
+      <div class="products">
+        <div class="row gx-5">
+            {% for product in products %}
+            <div class="col-lg-3">
+                <div class="box-element product">
+                    <img class="thumbnail" src="{{ product.imageUrl }}">
+                    <h6><strong>{{product.name}}</strong></h6>
+                
+                    
+                        {% comment %} <hr> {% endcomment %}
 
-				{% comment %} <button  class="btn btn-outline-secondary add-btn">Add to Cart</button>
-				<a class="btn btn-outline-success" href="#">View</a>
-				<h4 style="display: inline-block; float: right"><strong>{{product.price}}</strong></h4> {% endcomment %}
+                        {% comment %} <button  class="btn btn-outline-secondary add-btn">Add to Cart</button>
+                        <a class="btn btn-outline-success" href="#">View</a>
+                        <h4 style="display: inline-block; float: right"><strong>{{product.price}}</strong></h4> {% endcomment %}
 
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
-    {% endfor %}
+</div>
 </div>
 {% endblock content %}
