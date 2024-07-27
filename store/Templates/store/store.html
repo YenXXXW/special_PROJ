@@ -1,6 +1,11 @@
 {% extends 'store/main.html' %}
 {% load static %}
 {% block content %}
+<div id="hero" style="background-image: url('{% static "image/Hero.jpeg"%}')">
+       
+       
+    <h1>Cane Craft</h1>
+</div>
 <div class="row">
     {% for product in products %}
     <div class="col-lg-4">
