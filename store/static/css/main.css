@@ -1,5 +1,5 @@
 body{
-	background-color:  #f0f0f0!important;
+	background-color:  #ffffff!important;
 }
 
 h1,h2,h3,h4,h5,h6{
@@ -20,18 +20,6 @@ nav {
 	width: 100vw;
 	position: relative;
 }
-
-.products-container-bg {
-	width: 80vw;
-	border-bottom: 2px  solid transparent;
-	box-shadow: 0 0 8px 8px white inset;
-	/* center a div */
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin: 30px auto;
-}
-
 
 
 .products-container {
@@ -68,7 +56,11 @@ nav {
 }
 
 .bg-dark{
-	background-color: #144b92!important;
+	background-color: #000000!important;
+}
+
+nav {
+	background-color: rgb(15, 11, 11);
 }
 
 nav .btn {
@@ -82,6 +74,25 @@ nav select {
 	color: white;
 	margin-right: 20px;
 }
+
+#hero {
+	position: relative;
+	height: 35vh;
+	background-image: url("{% static 'image/Hero.jpeg' %}");
+	background-size: cover; /* Ensure the image covers the whole section */
+	background-position: center; /* Center the image */
+}
+
+#hero h1{
+	position: absolute;
+	top: 30%; /* Center the h1 vertically */
+	left: 50%; /* Center the h1 horizontally */
+	transform: translate(-50%, -50%); 
+	color: rgb(255, 253, 253);
+	font-size: 60px;
+}
+
+
 
 #navSearch{
 	background-color: white;
@@ -104,6 +115,11 @@ nav select {
 	padding:none;
 	flex: 1;
 }
+
+#category-container {
+	background-color: red;
+}
+
 
 #cart-icon{
 	width:25px;

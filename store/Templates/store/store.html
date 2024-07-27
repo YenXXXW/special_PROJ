@@ -1,9 +1,18 @@
 {% extends 'store/main.html' %}
 {% load static %}
 {% block content %}
+
 <div class="my-container">
-    <img src="{% static 'image/products-container-bg-8.png' %}" class="products-container-bg">
-    
+    <div id="hero" style="background-image: url('{% static "image/Hero.jpeg"%}')">
+       
+       
+        <h1>Cane Craft</h1>
+    </div>
+    <div id="category-container">
+        {% for category in categories %}
+        <p>{{category.name}}</p>
+        {% endfor %}
+    </div>
     <div class="products-container">
       <div class="products">
         <div class="row gx-5">

@@ -6,14 +6,13 @@ from .models import *
 def store(request):
     shop1 = Shop.objects.get(name="Shop 1")
     products = Product.objects.filter(shop=shop1)
-    for product in products:
-        print(product.name, product.price)
+    print(products)
     context={"products": products}
     return render(request, 'store/store.html', context)
 
 def cart(request):
-    
-    context={}
+    categories = Category.objects.all()
+    context={"categories": categories}
     return render(request, 'store/cart.html', context)
 
 def checkout(request): 
