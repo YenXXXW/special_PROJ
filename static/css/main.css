@@ -1,6 +1,5 @@
-
 body{
-	background-color:  #f0f0f0;
+	background-color:  #ffffff!important;
 }
 
 h1,h2,h3,h4,h5,h6{
@@ -8,10 +7,12 @@ h1,h2,h3,h4,h5,h6{
 }
 
 nav {
-	padding-left: 6%;
-	padding-right: 6%;
+	padding-left: 10%;
+	padding-right: 10%;
 	height: 100px;
+	
 }
+
 
 .my-container {
 	padding: 0;
@@ -19,18 +20,6 @@ nav {
 	width: 100vw;
 	position: relative;
 }
-
-.products-container-bg {
-	width: 60vw;
-	border-bottom: 2px  solid transparent;
-	box-shadow: 0 0 8px 8px white inset;
-	/* center a div */
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin: 30px auto;
-}
-
 
 
 .products-container {
@@ -67,8 +56,70 @@ nav {
 }
 
 .bg-dark{
-	background-color: #16457c!important;
+	background-color: #000000!important;
 }
+
+nav {
+	background-color: rgb(15, 11, 11);
+}
+
+nav .btn {
+	color:white
+}
+
+nav select {
+	outline: none;
+	background-color: transparent;
+	border: none;
+	color: white;
+	margin-right: 20px;
+}
+
+#hero {
+	position: relative;
+	height: 35vh;
+	background-image: url("{% static 'image/Hero.jpeg' %}");
+	background-size: cover; /* Ensure the image covers the whole section */
+	background-position: center; /* Center the image */
+}
+
+#hero h1{
+	position: absolute;
+	top: 30%; /* Center the h1 vertically */
+	left: 50%; /* Center the h1 horizontally */
+	transform: translate(-50%, -50%); 
+	color: rgb(255, 253, 253);
+	font-size: 60px;
+}
+
+
+
+#navSearch{
+	background-color: white;
+	width: 55%;
+	height: 35px;
+	display: flex;
+  	align-items: center;
+	padding-left: 1%;
+	padding-right: 1%;
+	border-radius: 5px;
+}
+
+#navSearch button {
+	border:none
+}
+
+#navSearchInput {
+	outline: none;
+	border:none;
+	padding:none;
+	flex: 1;
+}
+
+#category-container {
+	background-color: red;
+}
+
 
 #cart-icon{
 	width:25px;
@@ -82,7 +133,7 @@ nav {
 	color:#fff;
 	background-color: red;
 	width: 20px;
-	height: 25px;
+	height: 20px;
 	border-radius: 50%;
 	font-size: 14px;
 }
