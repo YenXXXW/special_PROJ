@@ -1,12 +1,41 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from django import forms
+
 import json
 import datetime
 from .models import *
 
 # Create your views here.
 
+class SelectCategoryForm(forms.Form):
+    categories = Category.objects.all()
+    category=forms.MultipleChoiceField(
+        required=False,
+        widget=forms.RadioSelect,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(SelectCategoryForm, self).__init__(*args, **kwargs)
+        self.fields['category'].choices = [(category.id, category.name) for category in Category.objects.all()]
+        # if selected_category:
+        #     self.fields['category'].initial = [int(selected_category)]
+        
+
 def store(request):
+    if "selected_category" not in request.session:
+        request.session["selected_category"] = "200"
+    products = Product.objects.all()
+    if request.method == "POST":
+        
+        selected_category = request.POST.get('category')
+        request.session["selected_category"] = selected_category
+        request.session["selected_category"] 
+        print(selected_category)
+        products = Product.objects.filter(category=selected_category)
+        print(products)
+        
+
     if request.user.is_authenticated:
         customer = request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, complete=False)
@@ -17,9 +46,10 @@ def store(request):
         order={'get_cart_total':0, 'get_cart_item':0}
         cartItems=order['get_cart_item']
 
-
-    products=Product.objects.all()
-    context={'products':products, 'cartItems':cartItems}
+    categories = Category.objects.all()
+    
+    form = SelectCategoryForm(initial={'category': [request.session["selected_category"]]})
+    context={'products':products, 'cartItems':cartItems, "categories": categories, "selected_category":request.session["selected_category"], "form":form}
     return render(request, 'store/store.html', context)
 
 def cart(request):

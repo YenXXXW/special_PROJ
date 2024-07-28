@@ -2,25 +2,53 @@
 {% load static %}
 {% block content %}
 <div id="hero" style="background-image: url('{% static "image/Hero.jpeg"%}')">
-       
-       
     <h1>Cane Craft</h1>
 </div>
-<div class="row">
-    {% for product in products %}
-    <div class="col-lg-4">
-        <img class="thumbnail" src="{{product.imageURL}}">
-        <div class="box-element product">
-            <h6><strong>{{product.name}}</strong></h6>
-				<hr>
+<div class="row " id="productsAndCategoriesContainer">
+    <div class="col-lg-3">
+        <form class="col" method="post" action="{% url 'store' %}" id="category-select-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" />
+        </form>
+    {% comment %} <script type="text/javascript">
+        $(document).ready(function() {
+            $(document).on('submit','#category-select-form',function(e){
+                e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).attr('action'),
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        console.log("saved")
+                    },
+                    error: function(xhr, errmsg, err) {
+                        alert('An error occurred: ' + errmsg);
+                    }
+                });
+            });
+        })
+    </script> {% endcomment %}
+   
 
-				<button  data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
-				<a class="btn btn-outline-success" href="#">View</a>
-				<h4 style="float: right; "><strong>${{product.price|floatformat:2}}</strong></h4>
-
-        </div>
     </div>
-    {% endfor %}
+    <div class="row col-lg-9 gx-5">
+        {% for product in products %}
+        <div class="col-sm-4 col-lg-4">
+            <img class="thumbnail" src="{{product.imageURL}}">
+            <div class="box-element product">
+                <h6><strong>{{product.name}}</strong></h6>
+                    <hr>
     
+                    <button  data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+                    <a class="btn btn-outline-success" href="#">View</a>
+                    <h4 style="float: right; "><strong>${{product.price|floatformat:2}}</strong></h4>
+    
+            </div>
+        </div>
+        {% endfor %}
+        
+    </div>
 </div>
+
 {% endblock content %}
