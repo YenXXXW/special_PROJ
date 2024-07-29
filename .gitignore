@@ -2,11 +2,10 @@
 *.log
 *.pot
 *.pyc
-__pycache__
+# Ignore __pycache__ directories
+__pycache__/
+**/__pycache__/
 
-
-store/__pycache__/
-store/migrations/__pycache__/
 store/static/
 db.sqlite3
 media
