@@ -32,7 +32,7 @@ class Category(models.Model):
 
 class Product(models.Model):
   name = models.CharField(max_length=200, null=True)
-  price=models.FloatField()
+  price=models.DecimalField(max_digits=9, decimal_places=2)
   shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='products')
   category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
   quantity = models.IntegerField(default=0)
