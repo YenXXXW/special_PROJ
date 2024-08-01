@@ -4,36 +4,26 @@
 <div id="hero" style="background-image: url('{% static "image/Hero.jpeg"%}')">
     <h1>Cane Craft</h1>
 </div>
+<script>
+    // Restore the scroll position from sessionStorage
+    const scrollPosition = sessionStorage.getItem('scrollPosition');
+    if (scrollPosition) {
+        window.scrollTo(0, parseInt(scrollPosition));
+        sessionStorage.removeItem('scrollPosition');
+    }
+</script>
 <div class="row " id="productsAndCategoriesContainer">
     <div class="col-lg-3">
         <h2>Category</h2>
-        <form class="col" id="category-select-form">
+        <form class="col" id="category-select-form" method="post" action="{% url 'store' %}" id="category-select-form">
             {% csrf_token %}
-            {% comment %} {{ form.as_p }} {% endcomment %}
+            <input class="form-check-input" type="checkbox" name="category" value="0" {% if selected_category == "0" %}checked{% endif %}>  all <br>
             {% for category in categories %}
-            <input type="radio" name="category" value="{{ category.id }}"> {{ category.name }}<br>
-           
-            {% endfor ß%}
+            <input class="form-check-input" type="checkbox" name="category" value="{{ category.id }}" {% if selected_category|stringformat:"s" == category.id|stringformat:"s" %}checked{% endif %}> {{ category.name }}<br>
+            <input type="submit" id="hiddenSubmit" style="display:none;" />
+            {% endfor %}
         </form>
-    {% comment %} <script type="text/javascript">
-        $(document).ready(function() {
-            $(document).on('submit','#category-select-form',function(e){
-                e.preventDefault();
-                $.ajax({
-                    type: 'POST',
-                    url: $(this).attr('action'),
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        console.log("saved")
-                    },
-                    error: function(xhr, errmsg, err) {
-                        alert('An error occurred: ' + errmsg);
-                    }
-                });
-            });
-        })
-    </script> {% endcomment %}
-   
+    
 
     </div>
     <div class="row col-lg-9 gx-5">
@@ -55,5 +45,33 @@
     </div>
     
 </div>
-<script src="{% static 'js/categoryFilter.js' %}"></script>
+{% comment %} <script src="{% static 'js/categoryFilter.js' %}"></script> {% endcomment %}
+<script>
+    // Function to handle checkbox click
+    function handleCheckboxClick() {
+        // Get all checkboxes with the class 'form-check-input'
+        const checkboxes = document.querySelectorAll('input.form-check-input[type="checkbox"]');
+        
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                // If the clicked checkbox is checked
+                
+                if (this.checked) {
+                    // Uncheck all other checkboxes
+                    checkboxes.forEach(otherCheckbox => {
+                        if (otherCheckbox !== this) {
+                            otherCheckbox.checked = false;
+                        }
+                        //preserver the scroll positon
+                        sessionStorage.setItem('scrollPosition', window.pageYOffset);
+                        document.getElementById('hiddenSubmit').click();
+                    });
+                }
+            });
+        });
+    }
+
+    // Initialize the checkbox handling function on DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', handleCheckboxClick);
+</script>
 {% endblock content %}

@@ -53,15 +53,16 @@ class SelectCategoryForm(forms.Form):
 
 def store(request):
     if "selected_category" not in request.session:
-        request.session["selected_category"] = "200"
+        request.session["selected_category"] = "0"
     products = Product.objects.all()
+
     if request.method == "POST":
-        data = json.loads(request.body)
-        selected_category= data.get('category')
+        print(request.POST.get('category'))
+        selected_category = request.POST.get('category')
         request.session["selected_category"] = selected_category
-        request.session["selected_category"] 
-        products = Product.objects.filter(category=selected_category)
-        
+        if selected_category != "0":
+            products = Product.objects.filter(category=selected_category)
+        print(products)
         
 
     if request.user.is_authenticated:
@@ -75,7 +76,6 @@ def store(request):
         cartItems=order['get_cart_item']
 
     categories = Category.objects.all()
-    print(products)
     
     form = SelectCategoryForm(initial={'category': [request.session["selected_category"]]})
     context={'products':products, 'cartItems':cartItems, "categories": categories, "selected_category":request.session["selected_category"], "form":form}
