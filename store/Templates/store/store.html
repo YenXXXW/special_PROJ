@@ -6,10 +6,14 @@
 </div>
 <div class="row " id="productsAndCategoriesContainer">
     <div class="col-lg-3">
-        <form class="col" method="post" action="{% url 'store' %}" id="category-select-form">
+        <h2>Category</h2>
+        <form class="col" id="category-select-form">
             {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" />
+            {% comment %} {{ form.as_p }} {% endcomment %}
+            {% for category in categories %}
+            <input type="radio" name="category" value="{{ category.id }}"> {{ category.name }}<br>
+           
+            {% endfor ß%}
         </form>
     {% comment %} <script type="text/javascript">
         $(document).ready(function() {
@@ -49,6 +53,7 @@
         {% endfor %}
         
     </div>
+    
 </div>
-
+<script src="{% static 'js/categoryFilter.js' %}"></script>
 {% endblock content %}
