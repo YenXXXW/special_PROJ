@@ -3,9 +3,8 @@ from django.http import JsonResponse
 from django import forms
 import json
 import datetime
-
 from .models import *
-from . util import cookieCart, cartData
+from .util import cookieCart, cartData
 
 # Create your views here.
 

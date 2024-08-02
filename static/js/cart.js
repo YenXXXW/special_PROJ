@@ -18,14 +18,14 @@ for (var i=0;i<updateBtns.length;i++)
 }
 
 function addCookieItem(productID,action){
-    console.log('Login and try again. . .')
+    console.log('Not Logged in. . .')
 
     if (action == 'add'){
         if(cart[productID] == undefined ){
             cart[productID] = {'quantity':1}
         }
         else{
-            cart[productID]['quantity']+1 
+            cart[productID]['quantity'] += 1 
         }
     }
     if (action == 'remove'){
@@ -39,6 +39,7 @@ function addCookieItem(productID,action){
     console.log('Cart:', cart)
     console.log(cart[productID])
     document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+    location.reload();
 
 }
 

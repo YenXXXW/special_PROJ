@@ -15,14 +15,14 @@ def cookieCart(request):
         
     for  i in cart:
         try:
-            cartItems += cart[i]["quantity"]
+            cartItems += cart[i]['quantity']
                 
             product = Product.objects.get(id=i)
-            total = (product.price * cart[i]["quantity"])
+            total = (product.price * cart[i]['quantity'])
              
             order['get_cart_total'] += total
-            order['get_cart_item'] += cart[i]["quantity"]
-
+            order['get_cart_item'] += cart[i]['quantity']
+ 
             item = {
                 'product':{
                     'id':product.id,
@@ -30,10 +30,13 @@ def cookieCart(request):
                     'price':product.price,
                     'imageURL':product.imageURL,
                     },
-                'quantity':cart[i]["quantity"],
+                'quantity':cart[i]['quantity'],
                 'get_total':total
                 }
-            item.append(item)
+            items.append(item)
+
+            if product.digital == False:
+                order['shipping'] = True
         except:
             pass
     return {'cartItems':cartItems, 'order':order, 'items':items }
