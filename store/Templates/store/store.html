@@ -1,77 +1,103 @@
 {% extends 'store/main.html' %}
 {% load static %}
+
 {% block content %}
-<div id="hero" style="background-image: url('{% static "image/Hero.jpeg"%}')">
-    <h1>Cane Craft</h1>
-</div>
-<script>
-    // Restore the scroll position from sessionStorage
-    const scrollPosition = sessionStorage.getItem('scrollPosition');
-    if (scrollPosition) {
-        window.scrollTo(0, parseInt(scrollPosition));
-        sessionStorage.removeItem('scrollPosition');
-    }
-</script>
-<div class="row " id="productsAndCategoriesContainer">
-    <div class="col-lg-3">
-        <h2>Category</h2>
-        <form class="col" id="category-select-form" method="post" action="{% url 'store' %}" id="category-select-form">
-            {% csrf_token %}
-            <input class="form-check-input" type="checkbox" name="category" value="0" {% if selected_category == "0" %}checked{% endif %}>  all <br>
-            {% for category in categories %}
-            <input class="form-check-input" type="checkbox" name="category" value="{{ category.id }}" {% if selected_category|stringformat:"s" == category.id|stringformat:"s" %}checked{% endif %}> {{ category.name }}<br>
-            <input type="submit" id="hiddenSubmit" style="display:none;" />
-            {% endfor %}
-        </form>
-    
+    <div id="hero" style="background-image: url('{% static "image/Hero.jpeg" %}')">
+        <h1>Cane Craft</h1>
+    </div>
 
-    </div>
-    <div class="row col-lg-9 gx-5">
-        {% for product in products %}
-        <div class="col-sm-4 col-lg-4">
-            <img class="thumbnail" src="{{product.imageURL}}">
-            <div class="box-element product">
-                <h6><strong>{{product.name}}</strong></h6>
-                    <hr>
-    
-                    <button  data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
-                    <a class="btn btn-outline-success" href="#">View</a>
-                    <h4 style="float: right; "><strong>${{product.price|floatformat:2}}</strong></h4>
-    
-            </div>
-        </div>
-        {% endfor %}
-        
-    </div>
-    
-</div>
-{% comment %} <script src="{% static 'js/categoryFilter.js' %}"></script> {% endcomment %}
-<script>
-    // Function to handle checkbox click
-    function handleCheckboxClick() {
-        // Get all checkboxes with the class 'form-check-input'
-        const checkboxes = document.querySelectorAll('input.form-check-input[type="checkbox"]');
-        
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                // If the clicked checkbox is checked
+    <div class="row" id="productsAndCategoriesContainer">
+        <div class="col-lg-3">
+            <h2>Category</h2>
+            <form class="col" id="category-select-form" method="post" action="{% url 'store' %}">
+                {% csrf_token %}
                 
-                if (this.checked) {
-                    // Uncheck all other checkboxes
-                    checkboxes.forEach(otherCheckbox => {
-                        if (otherCheckbox !== this) {
-                            otherCheckbox.checked = false;
-                        }
-                        //preserver the scroll positon
-                        sessionStorage.setItem('scrollPosition', window.pageYOffset);
-                        document.getElementById('hiddenSubmit').click();
-                    });
-                }
-            });
-        });
-    }
+                <!-- Handle all products checkbox -->
+                <input class="form-check-input" type="checkbox" name="category" value="0" {% if selected_category == "0" %}checked{% endif %}>
+                <label>All</label><br>
+                
+                <!-- Handle category checkboxes -->
+                {% for category in categories %}
+                    <input class="form-check-input" type="checkbox" name="category" value="{{ category.id }}" {% if selected_category|stringformat:"s" == category.id|stringformat:"s" %}checked{% endif %}>
+                    <label>{{ category.name }}</label><br>
+                {% endfor %}
+                
+                <!-- Submit button to handle form submission -->
+                <button type="submit">Filter</button>
+            </form>
+        </div>
 
-    // Initialize the checkbox handling function on DOMContentLoaded
-    document.addEventListener('DOMContentLoaded', handleCheckboxClick);
-</script>
-{% endblock content %}
+        <div class="col-lg-9" id="products-container">
+            <!-- Product list will be updated here by JavaScript -->
+            {% if products %}
+                <div class="row">
+                    {% for product in products %}
+                        <div class="col-md-4">
+                            <div class="product">
+                                <img src="{% static product.image_url %}" alt="{{ product.name }}">
+                                <h3>{{ product.name }}</h3>
+                                <p>{{ product.description }}</p>
+                                <p>${{ product.price }}</p>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p>No products available.</p>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No products available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('category-select-form');
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                const formData = new FormData(form);
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': document.querySelector('[name="csrfmiddlewaretoken"]').value
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data
+                    if (data.products) {
+                        updateProducts(data.products);
+                    } else {
+                        console.error('No products data received.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+
+            function updateProducts(products) {
+                const productsContainer = document.getElementById('products-container');
+                productsContainer.innerHTML = ''; // Clear existing products
+                
+                products.forEach(product => {
+                    const productElement = document.createElement('div');
+                    productElement.classList.add('col-md-4');
+                    productElement.innerHTML = `
+                        <div class="product">
+                            <img src="${product.image_url}" alt="${product.name}">
+                            <h3>${product.name}</h3>
+                            <p>${product.description}</p>
+                            <p>$${product.price}</p>
+                        </div>
+                    `;
+                    productsContainer.appendChild(productElement);
+                });
+            }
+        });
+    </script>
+{% endblock %}
