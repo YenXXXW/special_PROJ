@@ -13,30 +13,30 @@ class Customer(models.Model):
   
 
 class Shop(models.Model):
-    name = models.CharField(max_length=255)
-    location = models.CharField(max_length=255)
+  name = models.CharField(max_length=255)
+  location = models.CharField(max_length=255)
     # Other fields as needed
 
-    def __str__(self):
-        return self.name
+  def __str__(self):
+    return self.name
     
 
 class Category(models.Model):
-    name = models.CharField(max_length=255)
-    shops = models.ManyToManyField('Shop', related_name='categories')
+  name = models.CharField(max_length=255)
+  shops = models.ManyToManyField('Shop', related_name='categories')
     # Other fields as needed
 
-    def __str__(self):
-        return self.name
+  def __str__(self):
+    return self.name
 
 
 class Product(models.Model):
   name = models.CharField(max_length=200, null=True)
-  price=models.DecimalField(max_digits=9, decimal_places=2)
+  price = models.DecimalField(max_digits=9, decimal_places=2)
   shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='products')
   category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
   quantity = models.IntegerField(default=0)
-  image =models.ImageField(null=True, blank=True)
+  image = models.ImageField(null=True, blank=True)
 
   def __str__(self):
     return self.name
@@ -80,8 +80,12 @@ class OrderItem(models.Model):
 
   @property
   def get_total(self):
-     total = self.product.price * self.quantity
-     return total
+      if self.product:
+          total = self.product.price * self.quantity
+      else:
+          total = 0
+      return total
+
 
 
 class ShippingAddress(models.Model):
@@ -92,8 +96,7 @@ class ShippingAddress(models.Model):
   state = models.CharField(max_length=200, null=True)
   zipcode = models.CharField(max_length=200, null=True)
 
-
-  def __str__(self):
-    return self.address
+  def _str_(self):
+    return str(self.address)
    
 

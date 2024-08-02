@@ -37,8 +37,9 @@ function addCookieItem(productID,action){
         }
     }
     console.log('Cart:', cart)
+    console.log(cart[productID])
     document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
-    location.reload()
+
 }
 
 
