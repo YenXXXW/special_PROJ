@@ -4,8 +4,9 @@
 {% block content %}
     <div id="hero" style="background-image: url('{% static "image/Hero.jpeg" %}')">
         <h1>Cane Craft</h1>
+        <h3>Experience the Art of Myanmar Cane Craftsmanship.</h3>
     </div>
-
+    
     <div class="row" id="productsAndCategoriesContainer">
         <div class="col-lg-3">
             <h2>Category</h2>
@@ -30,13 +31,14 @@
             {% if products %}
                 <div class="row gy-5">
                     {% for product in products %}
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-contianer">
                             <div class="product">
                                 <div  class="product-img-container">
                                     <img src="{{product.imageURL}}" alt="{{ product.name }}" class="product-img">
                                 </div>
                                 <h3 id="product-price">{{ product.name }}</h3>
                                 <p>{{ product.price }} Ks</p>
+                                <button  data-product="{{product.id}}" data-action="add" class="btn add-to-cart">Add to Cart</button>
                             </div>
                         </div>
                     {% empty %}
@@ -100,13 +102,14 @@
                 
                 products.forEach(product => {
                     const productElement = document.createElement('div');
-                    productElement.classList.add('col-md-4');
+                    productElement.classList.add('col-md-4', 'col-contianer');
                     productElement.innerHTML = `
                         <div class="product">
                             <div class="product-img-container">
                                 <img src="${product.image_url}" alt="${product.name}" class="product-img">
                             </div>
                             <h3 id="product-price">${product.name}</h3>
+                            <button  data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
                             <p>${product.price} Ks</p>
                         </div>
                     `;
