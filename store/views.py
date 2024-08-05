@@ -20,36 +20,80 @@ class SelectCategoryForm(forms.Form):
         self.fields['category'].choices = [(category.id, category.name) for category in Category.objects.all()]
         # if selected_category:
         #     self.fields['category'].initial = [int(selected_category)]
+ 
+# def store(request):
+#     if "selected_category" not in request.session:
+#         request.session["selected_category"] = "200"
+#     products = Product.objects.all()
+#     if request.method == "POST":
         
+#         selected_category = request.POST.get('category')
+#         request.session["selected_category"] = selected_category
+#         request.session["selected_category"] 
+#         print(selected_category)
+#         products = Product.objects.filter(category=selected_category)
+#         print(products)
+        
+
+#     if request.user.is_authenticated:
+#         customer = request.user.customer
+#         order, created = Order.objects.get_or_create(customer=customer, complete=False)
+#         items= order.orderitem_set.all()
+#         cartItems=order.get_cart_item
+#     else:
+#         items = []
+#         order={'get_cart_total':0, 'get_cart_item':0}
+#         cartItems=order['get_cart_item']
+
+#     categories = Category.objects.all()
+    
+#     form = SelectCategoryForm(initial={'category': [request.session["selected_category"]]})
+#     context={'products':products, 'cartItems':cartItems, "categories": categories, "selected_category":request.session["selected_category"], "form":form}
+#     return render(request, 'store/store.html', context)       
 
 def store(request):
-    if "selected_category" not in request.session:
-        request.session["selected_category"] = "200"
-    products = Product.objects.all()
-    if request.method == "POST":
-        
+    selected_category = request.session.get("selected_category", "0")
+    
+    if request.method == "POST" and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # Process AJAX request
         selected_category = request.POST.get('category')
         request.session["selected_category"] = selected_category
-        request.session["selected_category"] 
-        print(selected_category)
-        products = Product.objects.filter(category=selected_category)
-        print(products)
+        if selected_category != "0":
+            products = Product.objects.filter(category=selected_category)
+        else:
+            products = Product.objects.all()
         
-
+        # Prepare response data
+        products_data = [
+            {
+                'name': product.name,
+                'price': product.price,
+                'image_url': product.image.url if product.image else None,  # Get the URL of the image if it exists
+            }
+            for product in products
+        ]
+        
+        return JsonResponse({'products': products_data})
+    
     if request.user.is_authenticated:
         customer = request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        items= order.orderitem_set.all()
-        cartItems=order.get_cart_item
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_item
     else:
         items = []
-        order={'get_cart_total':0, 'get_cart_item':0}
-        cartItems=order['get_cart_item']
+        order = {'get_cart_total': 0, 'get_cart_item': 0}
+        cartItems = order['get_cart_item']
 
     categories = Category.objects.all()
     
-    form = SelectCategoryForm(initial={'category': [request.session["selected_category"]]})
-    context={'products':products, 'cartItems':cartItems, "categories": categories, "selected_category":request.session["selected_category"], "form":form}
+    context = {
+        'products': Product.objects.filter(category=selected_category) if selected_category != "0" else Product.objects.all(),
+        'cartItems': cartItems,
+        'categories': categories,
+        'selected_category': selected_category,
+    }
+    
     return render(request, 'store/store.html', context)
 
 def cart(request):

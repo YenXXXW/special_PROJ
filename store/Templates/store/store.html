@@ -1,54 +1,123 @@
 {% extends 'store/main.html' %}
 {% load static %}
+
 {% block content %}
-<div id="hero" style="background-image: url('{% static "image/Hero.jpeg"%}')">
-    <h1>Cane Craft</h1>
-</div>
-<div class="row " id="productsAndCategoriesContainer">
-    <div class="col-lg-3">
-        <form class="col" method="post" action="{% url 'store' %}" id="category-select-form">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" />
-        </form>
-    {% comment %} <script type="text/javascript">
-        $(document).ready(function() {
-            $(document).on('submit','#category-select-form',function(e){
-                e.preventDefault();
-                $.ajax({
-                    type: 'POST',
-                    url: $(this).attr('action'),
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        console.log("saved")
-                    },
-                    error: function(xhr, errmsg, err) {
-                        alert('An error occurred: ' + errmsg);
+    <div id="hero" style="background-image: url('{% static "image/Hero.jpeg" %}')">
+        <h1>Cane Craft</h1>
+        <h3>Experience the Art of Myanmar Cane Craftsmanship.</h3>
+    </div>
+    
+    <div class="row" id="productsAndCategoriesContainer">
+        <div class="col-lg-3">
+            <h2>Category</h2>
+            <form class="col" id="category-select-form" method="post" action="{% url 'store' %}">
+                {% csrf_token %}
+                
+                <!-- Handle all products checkbox -->
+                <input class="form-check-input" type="checkbox" name="category" value="0" {% if selected_category == "0" %}checked{% endif %}>
+                <label>All</label><br>
+                
+                <!-- Handle category checkboxes -->
+                {% for category in categories %}
+                    <input class="form-check-input" type="checkbox" name="category" value="{{ category.id }}" {% if selected_category|stringformat:"s" == category.id|stringformat:"s" %}checked{% endif %}>
+                    <label>{{ category.name }}</label><br>
+                {% endfor %}
+                            
+            </form>
+        </div>
+
+        <div class="col-lg-9" id="products-container">
+            <!-- Product list will be updated here by JavaScript -->
+            {% if products %}
+                <div class="row gy-5">
+                    {% for product in products %}
+                        <div class="col-md-4 col-contianer">
+                            <div class="product">
+                                <div  class="product-img-container">
+                                    <img src="{{product.imageURL}}" alt="{{ product.name }}" class="product-img">
+                                </div>
+                                <h3 id="product-price">{{ product.name }}</h3>
+                                <p>{{ product.price }} Ks</p>
+                                <button  data-product="{{product.id}}" data-action="add" class="btn add-to-cart">Add to Cart</button>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p>No products available.</p>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No products available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        // Uncheck all other checkboxes
+                        checkboxes.forEach(otherCheckbox => {
+                            if (otherCheckbox !== this) {
+                                otherCheckbox.checked = false;
+                            }
+                        });
+        
+                        const form = document.getElementById('category-select-form');
+                        const formData = new FormData(form);
+        
+                        fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRFToken': document.querySelector('[name="csrfmiddlewaretoken"]').value
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Handle the response data
+                            if (data.products) {
+                                updateProducts(data.products);
+                            } else {
+                                console.error('No products data received.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
                     }
                 });
             });
-        })
-    </script> {% endcomment %}
-   
-
-    </div>
-    <div class="row col-lg-9 gx-5">
-        {% for product in products %}
-        <div class="col-sm-4 col-lg-4">
-            <img class="thumbnail" src="{{product.imageURL}}">
-            <div class="box-element product">
-                <h6><strong>{{product.name}}</strong></h6>
-                    <hr>
-    
-                    <button  data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
-                    <a class="btn btn-outline-success" href="#">View</a>
-                    <h4 style="float: right; "><strong>${{product.price|floatformat:2}}</strong></h4>
-    
-            </div>
-        </div>
-        {% endfor %}
         
-    </div>
-</div>
-
-{% endblock content %}
+            function updateProducts(products) {
+                const productsContainer = document.getElementById('products-container');
+                productsContainer.innerHTML = ''; // Clear existing products
+                productsContainer.classList.add('col-lg-9')
+                
+                const rowElement = document.createElement('div');
+                rowElement.classList.add('row', 'gy-5');
+                
+                products.forEach(product => {
+                    const productElement = document.createElement('div');
+                    productElement.classList.add('col-md-4', 'col-contianer');
+                    productElement.innerHTML = `
+                        <div class="product">
+                            <div class="product-img-container">
+                                <img src="${product.image_url}" alt="${product.name}" class="product-img">
+                            </div>
+                            <h3 id="product-price">${product.name}</h3>
+                            <button  data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+                            <p>${product.price} Ks</p>
+                        </div>
+                    `;
+                    rowElement.appendChild(productElement);
+                });
+                
+                productsContainer.appendChild(rowElement);
+            }
+        });
+    </script>
+{% endblock %}
