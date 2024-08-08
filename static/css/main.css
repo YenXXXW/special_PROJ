@@ -215,8 +215,9 @@ nav select {
 	flex-direction: column;
 	align-items: center;
 	color: #8f720e;
-	transition: transform 0.4s ease-in;
+	transition: transform 0.4s opacity 1s ease-in;
 	height: 350px;
+	background-color: #fff;
 	/* overflow-x: hidden; */
 }
 
@@ -239,9 +240,8 @@ nav select {
 	left: 15px;
 	right: 50%;
 	width: 300px;
-	height: 500px;
+	height: 400px;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* add a shadow effect */
-    transition: opacity 1s ease-in-out; /* add a transition effect */
 }
 
 
