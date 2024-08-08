@@ -59,11 +59,11 @@ function updateUserOrder(productID,action)
         
     })
     .then((response) => {
-        return response.json()
+        console.log(response.json())
     })
 
     .then((data) => {
-        location.reload();
+        console.log(data)
 
     })
 
