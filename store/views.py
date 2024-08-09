@@ -56,6 +56,8 @@ def store(request):
 
     data = cartData(request)
     cartItems = data['cartItems']
+
+    print(f"cartItsminStoreAbove{cartItems}")
     
     if request.method == "POST" and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         # Process AJAX request
@@ -89,7 +91,7 @@ def store(request):
         cartItems = order['get_cart_item']
 
     categories = Category.objects.all()
-    
+    print(f"cartItsminStore{cartItems}")
     context = {
         'products': Product.objects.filter(category=selected_category) if selected_category != "0" else Product.objects.all(),
         'cartItems': cartItems,
