@@ -38,7 +38,7 @@
                                 </div>
                                 <h3 id="product-price">{{ product.name }}</h3>
                                 <p>{{ product.price }} Ks</p>
-                                <button  data-product="{{product.id}}" data-action="add" class="btn add-to-cart update-cart">Add to Cart</button>
+                                <button data-product="{{product.id}}" data-action="add" class="btn add-to-cart update-cart">Add to Cart</button>
                             </div>
                         </div>
                     {% empty %}
@@ -91,6 +91,24 @@
                     }
                 });
             });
+
+            function attachEventListeners() {
+                var updateBtns = document.getElementsByClassName('update-cart');
+                for (var i = 0; i < updateBtns.length; i++) {
+                    updateBtns[i].addEventListener('click', function() {
+                        var productID = this.dataset.product;
+                        var action = this.dataset.action;
+                        console.log('productID:', productID, 'action:', action);
+                        console.log('User:', user);
+                        
+                        if (user === 'AnonymousUser') {
+                            addCookieItem(productID, action);
+                        } else {
+                            updateUserOrder(productID, action);
+                        }
+                    });
+                }
+            }
         
             function updateProducts(products) {
                 const productsContainer = document.getElementById('products-container');
@@ -109,7 +127,7 @@
                                 <img src="${product.image_url}" alt="${product.name}" class="product-img">
                             </div>
                             <h3 id="product-price">${product.name}</h3>
-                            <button  data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+                            <button data-product="{{product.id}}" data-action="add" class="btn add-to-cart update-cart">Add to Cart</button>
                             <p>${product.price} Ks</p>
                         </div>
                     `;
@@ -117,6 +135,8 @@
                 });
                 
                 productsContainer.appendChild(rowElement);
+
+                attachEventListeners();
             }
         });
     </script>
