@@ -2,20 +2,48 @@ var updateBtns = document.getElementsByClassName('update-cart')
 for (var i=0;i<updateBtns.length;i++)
 {
     updateBtns[i].addEventListener('click',function(){
+        console.log("add thos")
         var productID = this.dataset.product
         var action = this.dataset.action
         console.log('productID:',productID,'action:',action)
         console.log('User:',user)
         if(user === 'AnonymousUser')
         {
-            console.log('Not logged in')
+           addCookieItem(productID,action)
         }
         else
         {
             updateUserOrder(productID,action) 
         }
-    })
+    }) 
 }
+
+function addCookieItem(productID,action){
+    console.log('Not Logged in. . .')
+
+    if (action == 'add'){
+        if(cart[productID] == undefined ){
+            cart[productID] = {'quantity':1}
+        }
+        else{
+            cart[productID]['quantity'] += 1 
+        }
+    }
+    if (action == 'remove'){
+        cart[productID]['quantity']-=1
+
+        if(cart [productID]['quantity']<=0){
+            console.log('Remove Item')
+            delete cart[productID]
+        }
+    }
+    console.log('Cart:', cart)
+    console.log(cart[productID])
+    document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+    location.reload();
+
+}
+
 
 function updateUserOrder(productID,action)
 {
@@ -32,11 +60,11 @@ function updateUserOrder(productID,action)
         
     })
     .then((response) => {
-        console.log(response.json())
+        return response.json()
     })
 
     .then((data) => {
-        console.log(data)
+        location.reload();
 
     })
 
