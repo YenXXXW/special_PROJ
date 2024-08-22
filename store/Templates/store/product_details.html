@@ -1,0 +1,27 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/product_details.module.css' %}">
+{% endblock %}
+
+{% block content %}
+<section>
+    <div class="row g-5 px-5 mt-1">
+        <div class="col-md-6 col-lg-6 ">
+            <img src="{{product.imageURL}}" alt="{{ product.name }}"  class="product-img img-responsive">
+        </div>
+        <div class="col-md-6 col-lg-6 pt-5">
+            <h2>{{product.name}}</h2>
+            <p class="fs-5 price">{{product.price}} Ks<p>
+                <p id="decription">{{product.description}} </p>
+                <p class="otherAttributes mt-5"><span>color</span><span>{{product.color}}</span></p>
+                <p class="otherAttributes"><span>brand</span><span>{{product.brand}}</span></p>
+                <p class="otherAttributes"><span>quality</span><span>{{product.quality}}</span></p>
+                <p class="otherAttributes"><span>weight</span><span>{{product.weight}}</span></p>
+            <button  data-product="{{product.id}}" data-action="add" class="update-cart add_to_cart_button " >Add to cart</button>
+        </div>
+    </div>
+    <div class="blackblock">
+    </div>
+</section>
+{% endblock content %}

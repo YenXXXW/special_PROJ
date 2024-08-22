@@ -9,19 +9,21 @@
     
     <div class="row" id="productsAndCategoriesContainer">
         <div class="col-lg-3">
-            <h2>Category</h2>
+            <h2>Categories</h2>
             <form class="col" id="category-select-form" method="post" action="{% url 'store' %}">
                 {% csrf_token %}
-                
-                <!-- Handle all products checkbox -->
                 <input class="form-check-input" type="checkbox" name="category" value="0" {% if selected_category == "0" %}checked{% endif %}>
                 <label>All</label><br>
-                
-                <!-- Handle category checkboxes -->
+                <!-- Handle all products checkbox -->
                 {% for category in categories %}
                     <input class="form-check-input" type="checkbox" name="category" value="{{ category.id }}" {% if selected_category|stringformat:"s" == category.id|stringformat:"s" %}checked{% endif %}>
                     <label>{{ category.name }}</label><br>
                 {% endfor %}
+                
+                
+                
+                <!-- Handle category checkboxes -->
+                
                             
             </form>
         </div>
@@ -38,7 +40,14 @@
                                 </div>
                                 <h3 id="product-price">{{ product.name }}</h3>
                                 <p>{{ product.price }} Ks</p>
+                                <div>
+                                    <button class="view_button">
+                                    <a href ="{% url 'product_details' product.id %}">
+                                        View
+                                    </a>
+                                    </button>
                                 <button data-product="{{product.id}}" data-action="add" class="btn add-to-cart update-cart">Add to Cart</button>
+                                </div>
                             </div>
                         </div>
                     {% empty %}
@@ -120,15 +129,21 @@
                 
                 products.forEach(product => {
                     const productElement = document.createElement('div');
-                    productElement.classList.add('col-md-4', 'col-contianer');
+                    
+                    productElement.classList.add('col-md-4', 'col-contianer')
                     productElement.innerHTML = `
                         <div class="product">
                             <div class="product-img-container">
                                 <img src="${product.image_url}" alt="${product.name}" class="product-img">
                             </div>
                             <h3 id="product-price">${product.name}</h3>
-                            <button data-product="{{product.id}}" data-action="add" class="btn add-to-cart update-cart">Add to Cart</button>
-                            <p>${product.price} Ks</p>
+                             <p>${product.price} Ks</p>
+                            <div>
+                                
+                                <button class="view_button"><a href="product/${product.id}">View</a></button>
+                                <button data-product="{{product.id}}" data-action="add" class="btn add-to-cart update-cart">Add to Cart</button>
+                            </div>
+                           
                         </div>
                     `;
                     rowElement.appendChild(productElement);

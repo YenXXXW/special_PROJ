@@ -71,9 +71,11 @@ def store(request):
         # Prepare response data
         products_data = [
             {
+                'id': product.id,
                 'name': product.name,
                 'price': product.price,
                 'image_url': product.image.url if product.image else None,  # Get the URL of the image if it exists
+                'description': product.description
             }
             for product in products
         ]
@@ -185,3 +187,11 @@ def processOrder(request):
         )
     
     return JsonResponse('Payment complete', safe=False) 
+
+
+def product_details(request, product_id):
+    data = cartData(request)
+    cartItems = data['cartItems']
+    product = Product.objects.get(pk=product_id)
+    context = {"product": product, 'cartItems':cartItems}
+    return render(request, 'store/product_details.html', context)
