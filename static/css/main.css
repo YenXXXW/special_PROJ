@@ -60,6 +60,11 @@ nav {
 	background-color: rgb(15, 11, 11);
 }
 
+footer {
+	background-color: rgb(42, 39, 39);
+	color: white
+}
+
 nav .btn {
 	color:white
 }
@@ -258,8 +263,27 @@ nav select {
 	position: relative;
 }
 
+a {
+	color: white;
+	text-decoration: none;
+}
+
+.view_button {
+	color: white;
+	width: 6rem;
+	font-size: small;
+	border-radius: 5%;
+	background-color: #a8891a;
+	height: 100%;
+	opacity: 0; /* initially hide the add-to-cart button */
+	visibility: hidden;
+	transition: opacity 0.3s ease-in, visibility 0.3s ease-in;
+}
+
 .add-to-cart {
 	color: white;
+	text-wrap: nowrap;
+	width: 6rem;
 	font-size: small;
 	border-radius: 5%;
 	background-color: #a8891a;
@@ -272,3 +296,11 @@ nav select {
 	opacity: 1; /* fade in */
 	visibility: visible;
   }
+
+  .product:hover .view_button {
+	opacity: 1; /* fade in */
+	visibility: visible;
+  }
+
+
+  

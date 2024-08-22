@@ -31,12 +31,28 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+
+  HIGH = 'high'
+  MEDIUM = 'medium'
+  LOW = 'low'
+    
+  QUALITY_CHOICES = [
+      (HIGH, 'High'),
+      (MEDIUM, 'Medium'),
+      (LOW, 'Low'),
+  ]
+  
   name = models.CharField(max_length=200, null=True)
-  price = models.DecimalField(max_digits=9, decimal_places=0)
+  price = models.IntegerField(default=10000)
   shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='products')
   category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+  description = models.CharField(max_length=1000, null=True)
   quantity = models.IntegerField(default=0)
   image = models.ImageField(null=True, blank=True)
+  quality = models.CharField(max_length=6, choices=QUALITY_CHOICES, default=MEDIUM)
+  color = models.CharField(max_length=50, null=True)
+  brand = models.CharField(max_length=50, null=True)
+  weight = models.DecimalField(max_digits=5,  decimal_places=2, default=10)
 
   def __str__(self):
     return self.name
