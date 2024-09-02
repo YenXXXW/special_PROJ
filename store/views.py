@@ -212,18 +212,13 @@ def log_in(request):
             # Log the user in
             login(request, user)
             # Redirect to the home page or any other page
-            return redirect('home')  # Replace 'home' with your desired URL pattern name
+            return redirect('store')  # Replace 'home' with your desired URL pattern name
         else:
             # If authentication fails
-            return HttpResponse("Invalid login credentials")
+            return redirect('log_in')
     else:
         # If it's a GET request, just render the login page
-        return render(request, 'login/log_in.html')
-
-def update(request):
-    context={}
-    return render(request,'login/update.html',context)
-
+        return render(request, 'store/log_in.html')
 
 
 def signup(request):
@@ -232,13 +227,13 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('home')  # Redirect to a home page or dashboard after signup
+            return redirect('store')  # Redirect to a home page or dashboard after signup
     else:
         form = CustomerSignUpForm()
-    return render(request, 'login/signup.html', {'form': form})
+    return render(request, 'store/signup.html', {'form': form})
 
 def log_out(request):
     logout(request)
    
-    return redirect('home')  
+    return redirect('store')  
 
