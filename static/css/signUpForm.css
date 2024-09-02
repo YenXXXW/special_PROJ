@@ -1,0 +1,65 @@
+/* General form control styles */
+.form-control {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+/* Additional styles for form layout */
+.signup-container {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    margin-top: 50px;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Error message styles */
+.error-message {
+    color: #e74c3c; /* Red color for errors */
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.form-error {
+    color: #e74c3c;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+/* Hide empty error messages */
+.error-message:empty {
+    display: none;
+}

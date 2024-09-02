@@ -1,10 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import JsonResponse
 from django import forms
 import json
 import datetime
 from .models import *
 from .util import cookieCart, cartData
+from django.contrib.auth import login,authenticate,logout
+from django.http import HttpResponse
+from .UserCreationForm import CustomerSignUpForm
 
 # Create your views here.
 
@@ -195,3 +198,47 @@ def product_details(request, product_id):
     product = Product.objects.get(pk=product_id)
     context = {"product": product, 'cartItems':cartItems}
     return render(request, 'store/product_details.html', context)
+
+def log_in(request):
+    if request.method == 'POST':
+        # Get username and password from the form
+        username = request.POST["username"]
+        password = request.POST['password']
+        
+        # Authenticate the user
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            # Log the user in
+            login(request, user)
+            # Redirect to the home page or any other page
+            return redirect('home')  # Replace 'home' with your desired URL pattern name
+        else:
+            # If authentication fails
+            return HttpResponse("Invalid login credentials")
+    else:
+        # If it's a GET request, just render the login page
+        return render(request, 'login/log_in.html')
+
+def update(request):
+    context={}
+    return render(request,'login/update.html',context)
+
+
+
+def signup(request):
+    if request.method == 'POST':
+        form = CustomerSignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('home')  # Redirect to a home page or dashboard after signup
+    else:
+        form = CustomerSignUpForm()
+    return render(request, 'login/signup.html', {'form': form})
+
+def log_out(request):
+    logout(request)
+   
+    return redirect('home')  
+
