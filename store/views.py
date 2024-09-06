@@ -6,13 +6,10 @@ import json
 import datetime
 from .models import *
 from .util import cookieCart, cartData
-<<<<<<< HEAD
 from django.core import serializers
-=======
 from django.contrib.auth import login,authenticate,logout
 from django.http import HttpResponse
 from .UserCreationForm import CustomerSignUpForm
->>>>>>> develop
 
 # Create your views here.
 
@@ -266,7 +263,7 @@ def shop_admin_panel_edit_product(request):
         price = request.POST.get("price")
         description = request.POST.get("description")
         image = request.FILES.get("image")
-        if not all([name, price, id, description, image]):
+        if not all([name, price, id, description ]):
             return JsonResponse({"error": "The required fields are not present"}, status=400)
         product = Product.objects.filter(id=id).first()
         if not product:
@@ -278,9 +275,10 @@ def shop_admin_panel_edit_product(request):
         except ValueError:
             return JsonResponse({"error": "Price must be the interger type"}, status=400)
             
-        if image.size > 5 * 1024 * 1024:
-            return JsonResponse({"error": "The image size should not exceed 5mb"}, status=400)
-        product.image = image
+        if image:
+            if image.size > 5 * 1024 * 1024:
+                return JsonResponse({"error": "The image size should not exceed 5mb"}, status=400)
+            product.image = image
 
         product.save()
 
