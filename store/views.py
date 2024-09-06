@@ -204,7 +204,6 @@ def product_details(request, product_id):
     context = {"product": product, 'cartItems':cartItems}
     return render(request, 'store/product_details.html', context)
 
-<<<<<<< HEAD
 def shop_admin_panel(request):
     return render(request, 'store/shop_admin.html')
 
@@ -292,7 +291,6 @@ def shop_admin_panel_edit_product(request):
 
 def addProduct(request): 
     pass
-=======
 def log_in(request):
     if request.method == 'POST':
         # Get username and password from the form
@@ -331,4 +329,3 @@ def log_out(request):
    
     return redirect('store')  
 
->>>>>>> develop
