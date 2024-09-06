@@ -10,4 +10,8 @@ urlpatterns=[
     path('checkout/', views.checkout, name="checkout"),
     path('update_item/', views.updateItem, name="update_item"),
     path('process_order/', views.processOrder, name="process_order"),
+    path('shop_admin_panel', views.shop_admin_panel, name="shop_admin_panel"),
+    path('shop_admin_data', views.shop_admin_data, name="shop_admin_data"),
+    path('shop_admin_panel_edit_product', views.shop_admin_panel_edit_product,name='shop_admin_panel_edit_product'),
+    path('get_product_by_Id', views.get_product_by_Id, name="get_product_by_Id")
 ]

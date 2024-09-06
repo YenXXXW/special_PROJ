@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 from django import forms
 import json
 import datetime
 from .models import *
 from .util import cookieCart, cartData
+from django.core import serializers
 
 # Create your views here.
 
@@ -195,3 +197,91 @@ def product_details(request, product_id):
     product = Product.objects.get(pk=product_id)
     context = {"product": product, 'cartItems':cartItems}
     return render(request, 'store/product_details.html', context)
+
+def shop_admin_panel(request):
+    return render(request, 'store/shop_admin.html')
+
+def shop_admin_data(request):
+    products = Product.objects.all()
+    products_data = [
+        {
+            'id': product.id,
+            'name': product.name,
+            'price': product.price,
+            'image_url': product.image.url if product.image else None,  # Get the URL of the image if it exists
+            'description': product.description
+        }
+        for product in products
+    ]
+
+    return JsonResponse({'products': products_data})
+
+
+
+@require_POST
+def get_product_by_Id(request):
+    if request.body:
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+
+    else:
+        return JsonResponse({'error': 'Empty request body'}, status=400)
+    if 'productId' not in data:
+        return JsonResponse({'error': 'ID is required'}, status=400)
+
+    # Process the data if the ID is present
+    id_value = data['productId']
+    
+    product = Product.objects.filter(id = id_value).first()
+
+    if not product:
+        return JsonResponse({'error': "product with the given Id doesnot exist"}, status = 400)
+    
+    
+    product_data = {
+        'id': product.id,
+        'name': product.name,
+        'price': product.price,
+        'description': product.description,
+        'image_url': product.imageURL
+        # Add other fields as necessary
+    }
+    return JsonResponse({'product': product_data})
+    
+
+@require_POST
+def shop_admin_panel_edit_product(request):
+    try:
+        id = request.POST.get("id")
+        name = request.POST.get("name")
+        price = request.POST.get("price")
+        description = request.POST.get("description")
+        image = request.FILES.get("image")
+        if not all([name, price, id, description, image]):
+            return JsonResponse({"error": "The required fields are not present"}, status=400)
+        product = Product.objects.filter(id=id).first()
+        if not product:
+            return JsonResponse({'error': "product does not exist"}, status=404)
+        product.name = name
+        product.description = description
+        try:
+            product.price =  int(price)
+        except ValueError:
+            return JsonResponse({"error": "Price must be the interger type"}, status=400)
+            
+        if image.size > 5 * 1024 * 1024:
+            return JsonResponse({"error": "The image size should not exceed 5mb"}, status=400)
+        product.image = image
+
+        product.save()
+
+    except:
+        return JsonResponse({"error"})        
+    return JsonResponse({"message": "product updated successfully"},status=200)
+    
+
+def addProduct(request): 
+    pass

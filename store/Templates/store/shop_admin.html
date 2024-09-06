@@ -1,0 +1,46 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/shop_admin.module.css' %}">
+{% endblock %}
+
+{% block content %}
+<section >
+    <div class="container row">
+      <div class="sidebar col-3" id="adminPanelLeftSide">
+        <div id="products" class="item">
+          <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Products
+            </a>
+            
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#" id="view-products">View Products</a></li>
+              <li><a class="dropdown-item" href="#" id="add-product">Add Product</a></li>
+              <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+          </div>             
+        </div>
+        <div id="orders" class="item">
+          <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Orders
+            </a>
+              
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Action</a></li>
+              <li><a class="dropdown-item" href="#">Another action</a></li>
+              <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+          </div> 
+        </div>
+      </div>
+      
+
+      <div class="col-9" id="content">
+          content
+      </div>
+    <div>
+    <script type="text/javascript" src="{% static 'js/adminPanel.js' %}"></script>
+</section>
+{% endblock content %}
