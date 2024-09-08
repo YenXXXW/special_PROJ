@@ -26,35 +26,6 @@ class SelectCategoryForm(forms.Form):
         # if selected_category:
         #     self.fields['category'].initial = [int(selected_category)]
  
-# def store(request):
-#     if "selected_category" not in request.session:
-#         request.session["selected_category"] = "200"
-#     products = Product.objects.all()
-#     if request.method == "POST":
-        
-#         selected_category = request.POST.get('category')
-#         request.session["selected_category"] = selected_category
-#         request.session["selected_category"] 
-#         print(selected_category)
-#         products = Product.objects.filter(category=selected_category)
-#         print(products)
-        
-
-#     if request.user.is_authenticated:
-#         customer = request.user.customer
-#         order, created = Order.objects.get_or_create(customer=customer, complete=False)
-#         items= order.orderitem_set.all()
-#         cartItems=order.get_cart_item
-#     else:
-#         items = []
-#         order={'get_cart_total':0, 'get_cart_item':0}
-#         cartItems=order['get_cart_item']
-
-#     categories = Category.objects.all()
-    
-#     form = SelectCategoryForm(initial={'category': [request.session["selected_category"]]})
-#     context={'products':products, 'cartItems':cartItems, "categories": categories, "selected_category":request.session["selected_category"], "form":form}
-#     return render(request, 'store/store.html', context)       
 
 def store(request):
     selected_category = request.session.get("selected_category", "0")
@@ -62,7 +33,6 @@ def store(request):
     data = cartData(request)
     cartItems = data['cartItems']
 
-    print(f"cartItsminStoreAbove{cartItems}")
     
     if request.method == "POST" and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         # Process AJAX request
@@ -88,7 +58,6 @@ def store(request):
         return JsonResponse({'products': products_data})
     
     categories = Category.objects.all()
-    print(f"cartItsminStore{cartItems}")
     context = {
         'products': Product.objects.filter(category=selected_category) if selected_category != "0" else Product.objects.all(),
         'cartItems': cartItems,
@@ -202,10 +171,17 @@ def product_details(request, product_id):
     return render(request, 'store/product_details.html', context)
 
 def shop_admin_panel(request):
+    if not hasattr(request.user, 'shop'):
+        return redirect('store')
     return render(request, 'store/shop_admin.html')
 
 def shop_admin_data(request):
-    products = Product.objects.all()
+    if not hasattr(request.user, 'shop'):
+        return redirect('store')
+    shop = request.user.shop
+    products = Product.objects.filter(shop=shop)
+    if not shop:
+        return JsonResponse({"error": "shop not found"})
     products_data = [
         {
             'id': product.id,
@@ -223,6 +199,8 @@ def shop_admin_data(request):
 
 @require_POST
 def get_product_by_Id(request):
+    if not hasattr(request.user, 'shop'):
+        return redirect('store')
     if request.body:
         try:
             data = json.loads(request.body)
@@ -257,7 +235,11 @@ def get_product_by_Id(request):
 
 @require_POST
 def shop_admin_panel_edit_product(request):
+    if not hasattr(request.user, 'shop'):
+        return redirect('store')
     try:
+        shop = request.user.shop
+        print(shop)
         id = request.POST.get("id")
         name = request.POST.get("name")
         price = request.POST.get("price")
@@ -288,7 +270,49 @@ def shop_admin_panel_edit_product(request):
     
 
 def addProduct(request): 
-    pass
+
+    if request.method == "POST":
+        shop = request.user.shop
+        if not shop:
+            return JsonResponse({"error": "Shop does not exist"}, status=400)
+
+        name = request.POST.get("name")
+        price = request.POST.get("price")
+        description = request.POST.get("description")
+        image = request.FILES.get("image")
+        category_name = request.POST.get("category")
+        brand =  request.POST.get("brand")
+        color= request.POST.get('color')
+        if not all([name, price,  description, image , category_name, brand, color]):
+            return JsonResponse({"error": "The required fields are not present"}, status=400)
+        try:
+            price =  int(price)
+        except ValueError:
+            return JsonResponse({"error": "Price must be the interger type"}, status=400)
+            
+        if image:
+            if image.size > 5 * 1024 * 1024:
+                return JsonResponse({"error": "The image size should not exceed 5mb"}, status=400)
+            
+        category  = Category.objects.filter(name=category_name).first()
+        product = Product(
+            name=name,
+            description = description,
+            price=price,
+            shop=shop,
+            category=category,
+            brand= brand,
+            color= color,
+            image=image
+        )
+        product.save()
+        return JsonResponse({"message": "The product is added"})
+
+
+    categories = Category.objects.all()
+    category_list = [{"id": category.id, "name": category.name} for category in categories]
+    return JsonResponse(category_list,safe=False, status=200)
+
 def log_in(request):
     if request.method == 'POST':
         # Get username and password from the form
