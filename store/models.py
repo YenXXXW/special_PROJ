@@ -45,7 +45,7 @@ class Product(models.Model):
   
   name = models.CharField(max_length=200, null=True)
   price = models.IntegerField(default=10000)
-  shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='products')
+  shop = models.ForeignKey(Shop, on_delete=models.CASCADE, null=True, related_name='products')
   category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
   description = models.CharField(max_length=1000, null=True)
   quantity = models.IntegerField(default=0)
