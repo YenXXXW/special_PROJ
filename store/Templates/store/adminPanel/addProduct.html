@@ -1,0 +1,79 @@
+{% extends "store/adminPanel/adminPanelLayout.html" %}
+{% load static %}
+{% block shopAdminPanelContent%}
+<div class="row">
+    <form id="productContainerForm">
+        {% csrf_token %}
+        <div>
+        <label for="name">name</label>
+        <input id="name" name="name" value="">
+        </div>
+        <div>
+        <label for="price">price</label>
+        <input id="price" name="price" value="">
+        </div>
+        <div>
+        <label htmlFor="description">description<label>
+        <input id="description" name="description" value="">
+        </div>
+        <div>
+        <img src="" width='200' id="productImg" >
+        <input type="file" id="imageInput" accept="image/jpeg, image/png, image/webp" name="image" >
+        </div>
+        <div>
+        <select id="category" name="category">
+            <label htmlFor="category">category</label>
+            {% for category in categories %}
+                <option value="{{ category.name }}">{{category.name}}</option>
+            {% endfor %}
+        </select>
+        </div>
+        <div>
+        <label for="color">color</label>
+        <input name="color" type="text" id="color" value="">
+        </div>
+        <label for="brand">brand</label> 
+        <input id="brand" type="text" name="brand" value=""/>
+        <div>
+            <label for="weight">weight</label>
+            <input type="number" value="" name="weight" id="weight"/>
+        </div>
+        <div>
+        </div>
+        <button id="addProductButton">Add</button>
+    </form>
+    <script>
+        const addProduct= document.getElementById("addProductButton")
+        const ImageInput = document.getElementById("imageInput")
+        const productImage = document.getElementById("productImg")
+        ImageInput.addEventListener("change", (e) => {
+            const uploadedImage = e.target.files[0]
+            if (uploadedImage) {
+                const reader = new FileReader()
+
+                reader.onload = (e) => {
+                    productImage.src = e.target.result
+                }
+
+                reader.readAsDataURL(uploadedImage)
+            }
+        })
+        
+        addProduct.addEventListener("click", (e)=> {  
+        console.log("this is working")
+        e.preventDefault()
+
+        const formData = new FormData(productContainerForm)
+        console.log()
+        var url=`/add-product`
+        fetch(url, {
+            method: "POST",
+            headers: {
+                'X-CSRFToken':csrftoken,
+            }, body:formData
+        }).then(res => res.json())
+        .then(data => console.log(data))
+        })
+    </script>
+</div>
+{% endblock %}

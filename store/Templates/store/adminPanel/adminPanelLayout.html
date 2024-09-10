@@ -15,8 +15,8 @@
             </a>
             
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#" id="view-products">View Products</a></li>
-              <li><a class="dropdown-item" href="#" id="add-product">Add Product</a></li>
+              <li><a class="dropdown-item" href="{% url "get-products" %}" id="view-products">View Products</a></li>
+              <li><a class="dropdown-item" href="{% url "add-product" %}" id="add-product">Add Product</a></li>
               <li><a class="dropdown-item" href="#">Something else here</a></li>
             </ul>
           </div>             
@@ -28,7 +28,7 @@
             </a>
               
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Action</a></li>
+              <li><a class="dropdown-item" href="{% url "store" %}" id="getOrders">Action</a></li>
               <li><a class="dropdown-item" href="#">Another action</a></li>
               <li><a class="dropdown-item" href="#">Something else here</a></li>
             </ul>
@@ -38,9 +38,9 @@
       
 
       <div class="col-9" id="content">
-          content
+        {% block shopAdminPanelContent %}
+        {% endblock shopAdminPanelContent %}
       </div>
     <div>
-    <script type="text/javascript" src="{% static 'js/adminPanel.js' %}"></script>
 </section>
 {% endblock content %}
