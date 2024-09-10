@@ -45,3 +45,11 @@ section {
     height: 200px;
     object-fit: contain;
 }
+
+table {
+    border: solid 1px black;
+}
+
+td{
+    color: red
+}

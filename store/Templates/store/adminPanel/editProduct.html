@@ -1,0 +1,53 @@
+{% extends "store/adminPanel/adminPanelLayout.html" %}
+{% load static %}
+{% block shopAdminPanelContent%}
+<div class="row">
+    <form id="productContainerForm">
+        {% csrf_token %}
+        <label htmlFor="name">name</label>
+        <input id="name" name="name" value="{{ product.name }}">
+        <label htmlFor="price">price</label>
+        <input id="price" name="price" value="{{ product.price }}">
+        <label htmlFor="description">description<label>
+        <input id="description" name="description" value="{{ product.description }}">
+        <img src="{{ product.imageURL }}" width='200' id="productImg" >
+        <input type="file" id="imageInput" accept="image/jpeg, image/png, image/webp" name="image" >
+        <button id="updateProductButton">Update</button>
+    </form>
+    <script>
+        const updateButton = document.getElementById("updateProductButton")
+        const ImageInput = document.getElementById("imageInput")
+        const productImage = document.getElementById("productImg")
+        ImageInput.addEventListener("change", (e) => {
+            const uploadedImage = e.target.files[0]
+            if (uploadedImage) {
+                const reader = new FileReader()
+
+                reader.onload = (e) => {
+                    productImage.src = e.target.result
+                }
+
+                reader.readAsDataURL(uploadedImage)
+            }
+        })
+        
+        updateButton.addEventListener("click", (e)=> {  
+        console.log("this is working")
+        e.preventDefault()
+
+        const formData = new FormData(productContainerForm)
+        const id = {{ product.id }} 
+        console.log()
+        formData.append("id", id.toString() )
+        var url=`/edit-product/${id}`
+        fetch(url, {
+            method: "POST",
+            headers: {
+                'X-CSRFToken':csrftoken,
+            }, body:formData
+        }).then(res => res.json())
+        .then(data => console.log(data))
+        })
+    </script>
+</div>
+{% endblock %}
