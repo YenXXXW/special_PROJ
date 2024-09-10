@@ -8,6 +8,7 @@ from .util import cookieCart, cartData
 from django.core import serializers
 from django.contrib.auth import login,authenticate,logout
 from django.http import HttpResponse
+from django.contrib import messages
 from .UserCreationForm import CustomerSignUpForm
 
 # Create your views here.
@@ -149,6 +150,15 @@ def processOrder(request):
     order.transactoinId=transcation_id
     if total == order.get_cart_total:
         order.complete=True
+        orderItems = order.orderitem_set.all()
+        for orderItem in orderItems:
+            product = orderItem.product
+            if product.quantity >= orderItem.quantity:
+                product.quantity -= orderItem.quantity
+                product.save()
+            else:
+                # If not enough stock, return error message
+                return JsonResponse({'error': f"{product.name} is only available in quantity {product.quantity}"}, safe=False)
     order.save()
     ShippingAddress.objects.create(
             customer=customer,
@@ -185,7 +195,8 @@ def log_in(request):
             return redirect('store')  # Replace 'home' with your desired URL pattern name
         else:
             # If authentication fails
-            return redirect('log_in')
+            messages.error(request, "Invalid username or password")
+            return redirect('log_in') 
     else:
         # If it's a GET request, just render the login page
         return render(request, 'store/log_in.html')

@@ -63,6 +63,12 @@
         </div>
     </div>
 </div>
+{% if messages %}
+<div>
+    {% for message in messages %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+</div>{% endif %}
 <script type="text/javascript">
     var form = document.getElementById('form')
     var total='{{order.get_cart_total}}'
@@ -123,9 +129,14 @@
         })
 
         .then((data) => {
-            console.log('Success:',data);
-            alert("Transcation completed");
-            window.location.href="{% url 'store' %}";
+            if (data.error) {
+            // If there's an error, display the error message
+            alert(data.error);
+        } else {
+            // If no error, complete the transaction
+            alert("Transaction completed");
+            window.location.href = "{% url 'store' %}";
+        }
         
 
         })

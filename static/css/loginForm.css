@@ -1,51 +1,78 @@
+/* General body styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #f4f7f6;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
 }
 
+/* Center the form inside a container */
 .login-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-    margin-bottom: 20px;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-input[type="text"],
-input[type="password"] {
+    background-color: #ffffff;
+    padding: 40px;
+    max-width: 400px;
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
-button {
-    width: 100%;
+/* Style the form elements */
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333333;
+}
+
+.login-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-container input[type="text"],
+.login-container input[type="password"] {
     padding: 10px;
-    background-color: #28a745;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    margin: 10px 0;
+    font-size: 16px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
 }
 
-button:hover {
+.login-container button[type="submit"] {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-container button[type="submit"]:hover {
     background-color: #218838;
+}
+
+/* Error message styles */
+.alert {
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+/* Add some space for small screen responsiveness */
+@media screen and (max-width: 600px) {
+    .login-container {
+        padding: 20px;
+    }
 }

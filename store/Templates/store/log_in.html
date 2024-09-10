@@ -11,6 +11,13 @@
 </head>
 <body>
     <div class="login-container">
+        {% if messages %}
+    <div>
+        {% for message in messages %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
         <form method="POST" action="{% url 'log_in' %}">
             {% csrf_token %}
             <div class="form-group">
