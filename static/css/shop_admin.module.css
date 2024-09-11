@@ -53,3 +53,135 @@ table {
 td{
     color: red
 }
+
+/* shop_admin.module.css */
+
+/* Flex container to display sidebar and content side by side */
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+/* Sidebar styling */
+#adminPanelLeftSide {
+    width: 25%; /* Adjust sidebar width */
+    background-color: #f8f9fa;
+    padding: 15px;
+}
+
+/* Main content area where products will be displayed */
+#content {
+    width: 75%; /* Takes the remaining width */
+    padding: 15px;
+    overflow: hidden; /* Hide the overflow if necessary */
+}
+
+/* Dropdown menu styling for products and orders */
+.dropdown-toggle {
+    display: block;
+    width: 100%;
+    text-align: left;
+}
+
+/* Products section will dynamically load beside the sidebar */
+#view-products-content {
+    width: 100%;
+    display: block;
+    padding-top: 15px;
+}
+
+/* Orders section will be displayed beneath products */
+#orders {
+    margin-top: 30px; /* Push the orders section below products */
+}
+
+/* Hide the overflow in the main content to prevent scrolling */
+html, body {
+    overflow-x: hidden;
+}
+
+/* Form container styling */
+form#productContainerForm {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;  /* Prevent form overflow */
+}
+
+/* Ensure form inputs and labels are aligned */
+form#productContainerForm div {
+    width: 100%;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Limit the size of the product image */
+#productImg {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    max-width: 25%; /* Ensure image never exceeds form width */
+    max-height: 25%; /* Limit height of image */
+    object-fit: contain; /* Keep the aspect ratio intact */
+}
+
+/* File input styling */
+#imageInput {
+    padding: 10px;
+    font-size: 14px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Input and select fields styling */
+form#productContainerForm input,
+form#productContainerForm select {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Button styling */
+button#addProductButton {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    max-width: 400px;
+}
+
+/* Prevent button from moving when an image is selected */
+form#productContainerForm div:last-child {
+    margin-top: 20px; /* Ensure space between the image and button */
+}
+
+/* Ensure the button is visible even when a large image is selected */
+form#productContainerForm {
+    overflow: auto; /* Add scrolling if necessary */
+}
+
+/* Hover effect for the button */
+button#addProductButton:hover {
+    background-color: #0056b3;
+}
+
