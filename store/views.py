@@ -10,6 +10,11 @@ from django.contrib.auth import login,authenticate,logout
 from django.http import HttpResponse
 from django.contrib import messages
 from .UserCreationForm import CustomerSignUpForm
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.contrib.auth.views import PasswordResetConfirmView
+from django.urls import reverse_lazy
 
 # Create your views here.
 
@@ -182,11 +187,11 @@ def product_details(request, product_id):
 def log_in(request):
     if request.method == 'POST':
         # Get username and password from the form
-        username = request.POST["username"]
+        email = request.POST["username"]
         password = request.POST['password']
         
         # Authenticate the user
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username=email, password=password)
         
         if user is not None:
             # Log the user in
@@ -218,3 +223,37 @@ def log_out(request):
    
     return redirect('store')  
 
+def password_reset_request(request):
+    if request.method == "POST":
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data['email']
+            associated_users = User.objects.filter(email=data)
+            
+            if associated_users.exists():
+                # If a user with the email exists, Django will send the email automatically
+                form.save(
+                    request=request,
+                    use_https=True,
+                    email_template_name="password_reset_email.html",
+                    subject_template_name="password_reset_subject.txt"
+                )
+                messages.success(request, 'Password reset link has been sent to your email.')
+                return redirect('password_reset_done')
+            else:
+                messages.error(request, "We can't find an account with that email.")
+        else:
+            messages.error(request, "Please provide a valid email.")
+    else:
+        form = PasswordResetForm()
+    
+    return render(request, 'password_reset.html', {'form': form})
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'password_reset_confirm.html'
+    success_url = reverse_lazy('password_reset_complete')
+
+    def form_valid(self, form):
+        # Add any custom logic here if needed before saving the new password
+        return super().form_valid(form)

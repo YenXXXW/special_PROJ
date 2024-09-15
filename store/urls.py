@@ -19,5 +19,7 @@ urlpatterns=[
     path('log_in/', views.log_in, name="log_in"),
     path('logout/', views.log_out, name='logout'),
     path('signup/', views.signup, name='signup'),
-    path('get-orders', shopAdminPanelOrderViews.getOrders, name="getOrders")
+    path('get-orders', shopAdminPanelOrderViews.getOrders, name="getOrders"),
+    path('password_reset/', views.password_reset_request, name='password_reset'),
+    path('reset/<uidb64>/<token>/', views.CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
 ]
