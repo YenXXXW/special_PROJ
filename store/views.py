@@ -235,11 +235,11 @@ def password_reset_request(request):
                 form.save(
                     request=request,
                     use_https=True,
-                    email_template_name="password_reset_email.html",
-                    subject_template_name="password_reset_subject.txt"
+                    email_template_name="store/password_reset_email.html",
+                    subject_template_name="store/password_reset_subject.txt"
                 )
                 messages.success(request, 'Password reset link has been sent to your email.')
-                return redirect('password_reset_done')
+                
             else:
                 messages.error(request, "We can't find an account with that email.")
         else:
@@ -247,7 +247,7 @@ def password_reset_request(request):
     else:
         form = PasswordResetForm()
     
-    return render(request, 'password_reset.html', {'form': form})
+    return render(request, 'store/password_reset.html', {'form': form})
 
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
