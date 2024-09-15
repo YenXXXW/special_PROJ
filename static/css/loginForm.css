@@ -12,33 +12,45 @@ body {
 
 /* Center the form inside a container */
 .login-container {
-    background-color: #ffffff;
-    padding: 40px;
-    max-width: 400px;
     width: 100%;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
 /* Style the form elements */
-.login-container h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #333333;
+
+
+
+
+.form-field {
+    margin-bottom: 15px;
 }
 
-.login-container form {
-    display: flex;
-    flex-direction: column;
+.form-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #555;
 }
 
-.login-container input[type="text"],
-.login-container input[type="password"] {
+.form-control {
+    width: 100%;
     padding: 10px;
-    margin: 10px 0;
-    font-size: 16px;
-    border: 1px solid #cccccc;
-    border-radius: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+.form-control:focus {
+    border-color: #66afe9;
+    outline: none;
+    box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
 }
 
 .login-container button[type="submit"] {
