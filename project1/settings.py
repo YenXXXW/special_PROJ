@@ -136,7 +136,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # settings.py
 AUTHENTICATION_BACKENDS = [
     'store.backends.EmailBackend',  # Your custom backend
-    'django.contrib.auth.backends.ModelBackend',  # Fallback to the default if needed
+    
 ]
 
 # Example for Gmail SMTP
