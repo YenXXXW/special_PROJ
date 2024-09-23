@@ -212,6 +212,7 @@ def signup(request):
         form = CustomerSignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, user)
             return redirect('store')  # Redirect to a home page or dashboard after signup
     else:
