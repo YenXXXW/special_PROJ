@@ -40,6 +40,7 @@
                                 </div>
                                 <h3 id="product-price">{{ product.name }}</h3>
                                 <p>{{ product.price }} Ks</p>
+                                <p><small>qty:{{product.quantity}}</small></p>
                                 <div>
                                     <button class="view_button">
                                     <a href ="{% url 'product_details' product.id %}">

@@ -1,51 +1,90 @@
+/* General body styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #f4f7f6;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
 }
 
+/* Center the form inside a container */
 .login-container {
-    background-color: #fff;
-    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-h2 {
-    margin-bottom: 20px;
-}
+/* Style the form elements */
 
-.form-group {
+
+
+
+.form-field {
     margin-bottom: 15px;
 }
 
-label {
+.form-field label {
     display: block;
     margin-bottom: 5px;
+    font-size: 14px;
+    color: #555;
 }
 
-input[type="text"],
-input[type="password"] {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-button {
+.form-control {
     width: 100%;
     padding: 10px;
-    background-color: #28a745;
-    color: #fff;
-    border: none;
+    font-size: 14px;
+    border: 1px solid #ccc;
     border-radius: 4px;
-    cursor: pointer;
+    box-sizing: border-box;
+    margin-bottom: 10px;
 }
 
-button:hover {
+.form-control:focus {
+    border-color: #66afe9;
+    outline: none;
+    box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
+}
+
+.login-container button[type="submit"] {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-container button[type="submit"]:hover {
     background-color: #218838;
+}
+
+/* Error message styles */
+.alert {
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+/* Add some space for small screen responsiveness */
+@media screen and (max-width: 600px) {
+    .login-container {
+        padding: 20px;
+    }
 }

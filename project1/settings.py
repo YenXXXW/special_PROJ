@@ -133,3 +133,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# settings.py
+AUTHENTICATION_BACKENDS = [
+    'store.backends.EmailBackend',  # Your custom backend
+    
+]
+
+# Example for Gmail SMTP
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'sithuwin1892001@gmail.com'
+EMAIL_HOST_PASSWORD = 'jvzj ubsh uyhd zvon'
+DEFAULT_FROM_EMAIL = 'sithuwin1892001@gmail.com'
