@@ -1,15 +1,26 @@
 {% extends "store/adminPanel/adminPanelLayout.html" %}
 {% load static %}
-{% block shopAdminPanelContent%}
-<div class="row">
+
+{% block shopAdminPanelContent %}
+<div class="row full-width-row">
     {% for product in products %}
     <div>
-    <img src={{product.image_url}} alt="product-imgae" width="200">
-    <p>{{product.name}}</p>
-    <p>{{product.price}} Ks<p>
-    <p>description: {{product.description}}<p>
-    <a href="{% url 'edit-product' product.id %}"><button>Edit</button></a>
+        <img src={{product.image_url}} alt="product-image" width="200">
+        <p>{{product.name}}</p>
+        <p>{{product.price}} Ks</p>
+        <p>description: {{product.description}}</p>
+        <a href="{% url 'edit-product' product.id %}"><button>Edit</button></a>
     </div>
     {% endfor %}
 </div>
 {% endblock %}
+
+<style>
+    .full-width-row {
+        width: 100vw;
+        margin: 0;
+        padding: 20px;
+        background-color: #f9f9f9; /* adjust the background color as needed */
+        box-sizing: border-box;
+    }
+</style>

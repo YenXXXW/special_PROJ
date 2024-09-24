@@ -5,46 +5,45 @@
 {% endblock %}
 
 {% block content %}
-<section >
-    <div class="container row">
-      <div class="sidebar col-3" id="adminPanelLeftSide">
-        <div id="products" class="item">
+<section style="background-color: #F0F0F0; min-height: 100vh;">
+  <div class="container-fluid" style="padding: 0;">
+    <div class="row" style="flex-wrap: nowrap;">
+      <div class="col-3" id="adminPanelLeftSide" style="background-color: #F0F0F0; padding: 20px; min-height: 100vh; border-right: 1px solid #dee2e6;">
+        <div id="products" class="item" style="margin-bottom: 15px;">
           <div class="dropdown">
-            <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none; ">
               Products
             </a>
             
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{% url "get-products" %}" id="view-products">View Products</a></li>
-              <li><a class="dropdown-item" href="{% url "add-product" %}" id="add-product">Add Product</a></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
+            <ul class="dropdown-menu" style=" padding: 10px; border: 1px solid #dee2e6;">
+              <li><a class="dropdown-item" href="{% url "get-products" %}" id="view-products" style="text-decoration: none; padding: 10px;">View Products</a></li>
+              <li><a class="dropdown-item" href="{% url "add-product" %}" id="add-product" style="text-decoration: none;  padding: 10px;">Add Product</a></li>
+              <li><a class="dropdown-item" href="#" style="text-decoration: none;  padding: 10px;">Something else here</a></li>
             </ul>
           </div>             
         </div>
-        <div id="orders" class="item">
+        <div id="orders" class="item" style="margin-bottom: 15px;">
           <div class="dropdown">
-            <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none; ">
               Orders
             </a>
               
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{% url "store" %}" id="getOrders">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
+            <ul class="dropdown-menu" style=" padding: 10px; border: 1px solid #dee2e6;">
+              <li><a class="dropdown-item" href="{% url "store" %}" id="getOrders" style="text-decoration: none;  padding: 10px;">Action</a></li>
+              <li><a class="dropdown-item" href="#" style="text-decoration: none; padding: 10px;">Another action</a></li>
+              <li><a class="dropdown-item" href="#" style="text-  : none;  padding: 10px;">Something else here</a></li>
             </ul>
           </div> 
         </div>
       </div>
-      
-
-      <div class="col-9" id="content">
+      <div class="col-9" id="content" style="padding: 20px; ">
         <div id="view-products-content"></div>
         {% block shopAdminPanelContent %}
         
         
         {% endblock shopAdminPanelContent %}
       </div>
-      </div>
-    <div>
-</section>
+    </div>
+  </div>
+</section> 
 {% endblock content %}

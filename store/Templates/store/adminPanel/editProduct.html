@@ -39,7 +39,7 @@
         const id = {{ product.id }} 
         console.log()
         formData.append("id", id.toString() )
-        var url=`/edit-product/${id}`
+        var url=/edit-product/${id}
         fetch(url, {
             method: "POST",
             headers: {

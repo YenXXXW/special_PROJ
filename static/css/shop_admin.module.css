@@ -13,13 +13,12 @@ section {
 .item {
     margin-left: 3vh;
     margin-top: 2rem;
-    color: red;
+    color: rgb(0, 60, 255);
     margin-bottom: 2rem;
    
 }
 
 #content {
-    background-color: rgb(233, 166, 100);
     height: 100vh;
     width: 100vw;
 
@@ -53,7 +52,7 @@ table {
 }
 
 td{
-    color: red
+    color:rgb(247, 234, 234)
 }
 
 /* shop_admin.module.css */
@@ -105,14 +104,14 @@ html, body {
 
 /* Form container styling */
 form#productContainerForm {
-    position: relative;
+    position: static;
     top: 10%;
     left: 30%;
 
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: #171bf7;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     font-family: Arial, sans-serif;
@@ -128,8 +127,8 @@ form#productContainerForm div {
     width: 100%;
     margin-bottom: 15px;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: align-content;
+    justify-content: space-between; 
     align-items: center;
 }
 
@@ -167,8 +166,8 @@ form#productContainerForm select {
 button#addProductButton {
     width: 100%;
     padding: 12px;
-    background-color: #007bff;
-    color: white;
+    background-color: #ff7b00;
+    color: rgb(74, 24, 211);
     border: none;
     border-radius: 5px;
     font-size: 16px;
@@ -191,4 +190,3 @@ form#productContainerForm {
 button#addProductButton:hover {
     background-color: #0056b3;
 }
-
