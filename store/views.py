@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.http import JsonResponse
 from django import forms
 import json
+import requests
 import datetime
 from .models import *
 from .util import cookieCart, cartData
@@ -15,6 +16,7 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.contrib.auth.views import PasswordResetConfirmView
 from django.urls import reverse_lazy
+from django.conf import settings
 
 # Create your views here.
 
@@ -258,3 +260,86 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     def form_valid(self, form):
         # Add any custom logic here if needed before saving the new password
         return super().form_valid(form)
+    
+def paypal_create_order(request):
+    if request.method == 'POST':
+        # Get the order total from the POST data
+        data = json.loads(request.body)
+        total = data.get('total')  # Get the total passed from the frontend
+
+        if not total:
+            return JsonResponse({'error': 'Order total is missing'}, status=400)
+    # PayPal API credentials (use environment variables in production)
+    client_id = 'AQ3yaccqvAPhmWJho3j6nqEHEKczDUR7Uy7dvLpK_TXSP3myoIma6OhNHMZuzGKuCBhvOe8NNbxkt1nS'
+    client_secret = 'EPu95benZiO1Ulhon09YzwIDP4zsbDLyTrdjobjqIQqocqhRRz-tmk02yCalfWaniGzZlW3MIObPHSek'
+
+    # Get the access token
+    auth = (client_id, client_secret)
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    data = {'grant_type': 'client_credentials'}
+    token_response = requests.post('https://api.sandbox.paypal.com/v1/oauth2/token', headers=headers, data=data, auth=auth)
+    
+    token = token_response.json().get('access_token')
+    
+    # Create PayPal order
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {token}',
+    }
+    body = {
+        "intent": "CAPTURE",
+        "purchase_units": [{
+            "amount": {
+                "currency_code": "USD",
+                "value": str(total)  # Replace with actual order total
+            }
+        }]
+    }
+
+    response = requests.post(
+        'https://api.sandbox.paypal.com/v2/checkout/orders',
+        headers=headers,
+        json=body
+    )
+
+    if response.status_code == 201:
+        order_id = response.json()['id']
+        return JsonResponse({'id': order_id})
+    else:
+        return JsonResponse({'error': 'Unable to create PayPal order'}, status=500)
+    
+
+def paypal_capture_order(request, order_id):
+    # PayPal API credentials (use environment variables in production)
+    client_id = 'AQ3yaccqvAPhmWJho3j6nqEHEKczDUR7Uy7dvLpK_TXSP3myoIma6OhNHMZuzGKuCBhvOe8NNbxkt1nS'
+    client_secret = 'EPu95benZiO1Ulhon09YzwIDP4zsbDLyTrdjobjqIQqocqhRRz-tmk02yCalfWaniGzZlW3MIObPHSek'
+
+    # Get the access token
+    auth = (client_id, client_secret)
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    data = {'grant_type': 'client_credentials'}
+    token_response = requests.post(
+        'https://api.sandbox.paypal.com/v1/oauth2/token',
+        headers=headers,
+        data=data,
+        auth=auth
+    )
+
+    token = token_response.json().get('access_token')
+    
+    if not token:
+        return JsonResponse({'error': 'Unable to authenticate with PayPal'}, status=500)
+
+    # Capture the PayPal order
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {token}',  # Use the token received
+    }
+
+    capture_url = f'https://api.sandbox.paypal.com/v2/checkout/orders/{order_id}/capture'
+    response = requests.post(capture_url, headers=headers)
+
+    if response.status_code == 201:
+        return JsonResponse(response.json())  # Send the captured order details back to the frontend
+    else:
+        return JsonResponse({'error': 'Unable to capture PayPal order'}, status=500)
