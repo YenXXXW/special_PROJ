@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from .models import *
@@ -146,7 +146,7 @@ def addProduct(request):
             image=image
         )
         product.save()
-        return JsonResponse({"message": "The product is added"})
+        return JsonResponse({"message": "The product is added"}, status=200)
 
 
     categories = Category.objects.all()
@@ -155,3 +155,26 @@ def addProduct(request):
         'categories': category_list
     }
     return render(request, 'store/adminPanel/addProduct.html', context)
+
+
+@require_POST
+def deleteProduct(request):
+    try:
+    # Parse the request body
+        data = json.loads(request.body)
+        product_id = data.get('id')
+        
+        # Check if the product ID is present
+        if not product_id:
+            return JsonResponse({"error": "Product ID not provided"}, status=400)
+        
+        # Get the product or return a 404 error if it doesn't exist
+        product = get_object_or_404(Product, id=product_id)
+        
+        # Delete the product
+        product.delete()
+    
+        return JsonResponse({"message": "Product deleted successfully"}, status=200)
+
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
