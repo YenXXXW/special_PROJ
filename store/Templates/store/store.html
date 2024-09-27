@@ -35,6 +35,7 @@
                     {% for product in products %}
                         <div class="col-md-4 col-contianer">
                             <div class="product">
+                                <div>{{product.shop}}</div>
                                 <div  class="product-img-container">
                                     <img src="{{product.imageURL}}" alt="{{ product.name }}" class="product-img">
                                 </div>
@@ -58,7 +59,7 @@
             {% else %}
                 <p>No products available.</p>
             {% endif %}
-        </div>
+        </div><br><br><br><br>
     </div>
 
     <script>

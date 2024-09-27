@@ -1,6 +1,82 @@
 {% extends "store/adminPanel/adminPanelLayout.html" %}
 {% load static %}
 {% block shopAdminPanelContent%}
+<style>
+    /* Form container styling */
+#productContainerForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Label styling */
+label {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+/* Input fields styling */
+input[type="text"],
+input[type="number"],
+input[type="file"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Image styling */
+#productImg {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 10px;
+    max-width: 100%;
+    height: auto;
+}
+
+/* Update button styling */
+#updateProductButton {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+/* Update button hover effect */
+#updateProductButton:hover {
+    background-color: #218838;
+}
+
+/* Adjust input field focus style */
+input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Form responsiveness */
+@media (max-width: 768px) {
+    #productContainerForm {
+        width: 100%;
+        padding: 10px;
+    }
+}
+
+</style>
 <div class="row">
     <form id="productContainerForm">
         {% csrf_token %}

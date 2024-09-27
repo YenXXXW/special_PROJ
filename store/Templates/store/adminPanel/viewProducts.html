@@ -1,15 +1,72 @@
 {% extends "store/adminPanel/adminPanelLayout.html" %}
 {% load static %}
 {% block shopAdminPanelContent%}
-<div class="row">
-    {% for product in products %}
-    <div>
-    <img src={{product.image_url}} alt="product-imgae" width="200">
-    <p>{{product.name}}</p>
-    <p>{{product.price}}<p>
-    <p>{{product.description}}<p>
-    <a href="{% url 'edit-product' product.id %}"><button>Edit</button></a>
-    </div>
-    {% endfor %}
+
+<style>
+    /* Adding margin between columns */
+    #products-container {
+	padding-bottom: 100px;
+}
+.products {
+	background-image: linear-gradient(to bottom, rgb(255, 246, 246m 0), rgba(0, 0, 0, 0.5));
+	backdrop-filter: blur(10px);
+	background-size: 100% 300px; /* adjust the height to your needs */
+	background-position: 0% 100%;
+	
+}
+.col-lg-4, .col-lg-6, .col-lg-8, .col-lg-12{
+	margin-bottom: 30px;
+}
+.product{
+	border-radius: 0 0 4px 4px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	color: #8f720e;
+	transition: transform 0.4s opacity 1s ease-in;
+	width: 250px;
+	height: 350px;
+	padding-bottom: 1rem;
+	transition: top 0.3s ease-in 0.3s, z-index 0.3s ease-in 0.3s, box-shadow ease-in 0.3s;
+	/* overflow-x: hidden; */
+}
+
+.product-img-container {
+	width: 100%;
+	height: 100%;
+	border-radius: 5px;	
+}
+
+.product-img{
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	
+}
+.col-contianer {
+	position: relative;
+}
+
+
+</style>
+
+<div class="col-lg-9" id="products-container">
+    <!-- Product list will be updated here by JavaScript -->
+        <div class="row gy-5">
+            {% for product in products %}
+                <div class="col-md-4 col-contianer">
+                    <div class="product">
+                        
+                        <div  class="product-img-container">
+                            <img src="{{product.image_url}}" alt="{{ product.name }}" class="product-img">
+                        </div>
+                        <h3 id="product-price">{{ product.name }}</h3>
+                        <p>{{ product.price }} Ks</p>
+                        <p>{{product.description}}</p>
+                        <a href="{% url 'edit-product' product.id %}"><button>Edit</button></a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
 </div>
 {% endblock %}
