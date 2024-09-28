@@ -7,23 +7,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="{% static 'css/loginForm.css' %}">
+    <style>
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+    </style>
     
 </head>
 <body>
     <div class="login-container">
+        {% if messages %}
+    <div>
+        {% for message in messages %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
         <form method="POST" action="{% url 'log_in' %}">
             {% csrf_token %}
             <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
+                <label for="username">E-mail:</label><br>
+                <input type="text" id="username" name="username" required class="form-control">
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+                <div class="password-container">
+                    <input type="password" id="password" name="password" required class="form-control">
+                    <span class="toggle-password" data-toggle="#{{ field.auto_id }}">👁️</span>
+                </div>
+                
             </div>
             <button type="submit">Login</button>
         </form>
         <div><p>No account?<span><a href="{% url 'signup' %}" class="btn">SignUp</a></span></p></div>
+        <div><a href="{% url 'password_reset'%}">Forget password?</a></div>
     </div>
+    <script>
+        toggle=document.querySelector('.toggle-password');
+        toggle.addEventListener('click', function() {
+            const passwordField = document.getElementById("password");
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+        
+    </script>
 </body>
 </html>

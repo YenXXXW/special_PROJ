@@ -41,7 +41,8 @@
         <br>
         <div class="box-element hidden" id="payment-info">
             <small>Paypal Options</small>
-            <button id="make-payment">Make Payment</button>
+            <div id="paypal-button-container"></div>
+           <button id="make-payment">Make Payment</button>
         </div>
     </div>
     <div class="col-lg-6">
@@ -63,6 +64,12 @@
         </div>
     </div>
 </div>
+{% if messages %}
+<div>
+    {% for message in messages %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+</div>{% endif %}
 <script type="text/javascript">
     var form = document.getElementById('form')
     var total='{{order.get_cart_total}}'

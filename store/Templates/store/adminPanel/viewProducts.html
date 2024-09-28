@@ -84,6 +84,7 @@
                                 <p class="card-text">{{ product.price }} Ks</p>
                                 <p class="card-text">Description: {{ product.description }}</p>
                                 <a href="{% url 'edit-product' product.id %}" class="btn btn-primary">Edit</a>
+                                 <button class="adminDeleteButton" data-product-id={{ product.id }}>Delete</button>
                             </div>
                         </div>
                     </div>

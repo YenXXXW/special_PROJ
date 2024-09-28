@@ -12,7 +12,7 @@
 					<tr>
 						<th><h5>Items: <strong>{{order.get_cart_item}}</strong></h5></th>
 						<th><h5>Total:<strong> {{order.get_cart_total|floatformat:2}} Ks</strong></h5></th>
-						<th>
+						<th id="checkout-link">
 							<a  style="float:right; margin:5px;" class="btn btn-success" href="{% url 'checkout' %}">Checkout</a>
 						</th>
 					</tr>
@@ -49,4 +49,14 @@
         </div>
     </div>
 </div>
+<script>
+    var total_item=parseInt('{{order.get_cart_item}}')
+    console.log(total_item)
+    if(total_item <= 0 )
+{
+    document.getElementById('checkout-link').innerHTML=''
+}
+
+
+</script>
 {% endblock content %}
