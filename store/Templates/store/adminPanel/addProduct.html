@@ -1,47 +1,72 @@
 {% extends "store/adminPanel/adminPanelLayout.html" %}
 {% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/shop_admin.module.css' %}">
+{% endblock %}
+
 {% block shopAdminPanelContent%}
+<div id="orders-content">
 <div class="row">
     <form id="productContainerForm">
         {% csrf_token %}
         <div>
-        <label for="name">name</label>
-        <input id="name" name="name" value="">
+            <label for="name">Name</label>
+            <input id="name" name="name" value="">
         </div>
         <div>
-        <label for="price">price</label>
-        <input id="price" name="price" value="">
+            <label for="price">Price</label>
+            <input id="price" name="price" value="">
         </div>
         <div>
-        <label htmlFor="description">description<label>
-        <input id="description" name="description" value="">
+            <label for="description">Description</label>
+            <input id="description" name="description" value="">
         </div>
         <div>
-        <img src="" width='200' id="productImg" >
-        <input type="file" id="imageInput" accept="image/jpeg, image/png, image/webp" name="image" >
+            <label for="image">Product Image</label>
+            <img src="" alt="" id="productImg">
+            <input type="file" id="imageInput" accept="image/jpeg, image/png, image/webp" name="image">
         </div>
         <div>
-        <select id="category" name="category">
-            <label htmlFor="category">category</label>
-            {% for category in categories %}
-                <option value="{{ category.name }}">{{category.name}}</option>
-            {% endfor %}
-        </select>
+            <label for="category">Category</label>
+            <select id="category" name="category">
+                {% for category in categories %}
+                    <option value="{{ category.name }}">{{category.name}}</option>
+                {% endfor %}
+            </select>
         </div>
         <div>
-        <label for="color">color</label>
-        <input name="color" type="text" id="color" value="">
-        </div>
-        <label for="brand">brand</label> 
-        <input id="brand" type="text" name="brand" value=""/>
-        <div>
-            <label for="weight">weight</label>
-            <input type="number" value="" name="weight" id="weight"/>
+            <label for="color">Color</label>
+            <input name="color" type="text" id="color" value="">
         </div>
         <div>
+            <label for="brand">Brand</label>  <input id="brand" type="text" name="brand" value="">
+          
         </div>
-        <button id="addProductButton">Add</button>
+        <div>
+            <label for="weight">Weight</label>
+            <input type="number" value="" name="weight" id="weight">
+        </div>
+        <div>
+        <button id="addProductButton" style="
+        width: auto;
+        padding: 12px 20px;
+        background: linear-gradient(135deg, #FF5722, #FFC107); /* Attractive orange-to-yellow gradient */
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+    "
+    
+    >
+        Add Product
+             </button>
+         </div>
     </form>
+    
     <script>
         const addProduct= document.getElementById("addProductButton")
         const ImageInput = document.getElementById("imageInput")
@@ -77,6 +102,19 @@
             } 
         })
         })
+
+    document.getElementById('imageInput').addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('productImg').src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+});
+
     </script>
+</div>
 </div>
 {% endblock %}
