@@ -148,5 +148,23 @@
             });
         </script>
     </div>
+        const formData = new FormData(productContainerForm)
+        const id = {{ product.id }} 
+        console.log()
+        formData.append("id", id.toString() )
+        var url=`/edit-product/${id}`
+        fetch(url, {
+            method: "POST",
+            headers: {
+                'X-CSRFToken':csrftoken,
+            }, body:formData
+        }).then(res => {
+            if(res.status === 200) {
+                window.alert("product edited successfully")
+                window.location.href = "/shop_admin_panel"
+            }
+           })
+        })
+    </script>
 </div>
 {% endblock %}

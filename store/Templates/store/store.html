@@ -40,6 +40,7 @@
                                 </div>
                                 <h3 id="product-price">{{ product.name }}</h3>
                                 <p>{{ product.price }} Ks</p>
+                                <p><small>qty:{{product.quantity}}</small></p>
                                 <div>
                                     <button class="view_button">
                                     <a href ="{% url 'product_details' product.id %}">
@@ -141,7 +142,7 @@
                             <div>
                                 
                                 <button class="view_button"><a href="product/${product.id}">View</a></button>
-                                <button data-product="{{product.id}}" data-action="add" class="btn add-to-cart update-cart">Add to Cart</button>
+                                <button data-product="{{product.id}}" data-action="add" class="add-to-cart update-cart ">Add to Cart</button>
                             </div>
                            
                         </div>

@@ -2,13 +2,21 @@ from django.shortcuts import render,redirect
 from django.http import JsonResponse
 from django import forms
 import json
+import requests
 import datetime
 from .models import *
 from .util import cookieCart, cartData
 from django.core import serializers
 from django.contrib.auth import login,authenticate,logout
 from django.http import HttpResponse
+from django.contrib import messages
 from .UserCreationForm import CustomerSignUpForm
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.contrib.auth.views import PasswordResetConfirmView
+from django.urls import reverse_lazy
+from django.conf import settings
 
 # Create your views here.
 
@@ -149,6 +157,15 @@ def processOrder(request):
     order.transactoinId=transcation_id
     if total == order.get_cart_total:
         order.complete=True
+        orderItems = order.orderitem_set.all()
+        for orderItem in orderItems:
+            product = orderItem.product
+            if product.quantity >= orderItem.quantity:
+                product.quantity -= orderItem.quantity
+                product.save()
+            else:
+                # If not enough stock, return error message
+                return JsonResponse({'error': f"{product.name} is only available in quantity {product.quantity}"}, safe=False)
     order.save()
     ShippingAddress.objects.create(
             customer=customer,
@@ -172,11 +189,11 @@ def product_details(request, product_id):
 def log_in(request):
     if request.method == 'POST':
         # Get username and password from the form
-        username = request.POST["username"]
+        email = request.POST["username"]
         password = request.POST['password']
         
         # Authenticate the user
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username=email, password=password)
         
         if user is not None:
             # Log the user in
@@ -185,7 +202,8 @@ def log_in(request):
             return redirect('store')  # Replace 'home' with your desired URL pattern name
         else:
             # If authentication fails
-            return redirect('log_in')
+            messages.error(request, "Invalid username or password")
+            return redirect('log_in') 
     else:
         # If it's a GET request, just render the login page
         return render(request, 'store/log_in.html')
@@ -196,6 +214,7 @@ def signup(request):
         form = CustomerSignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, user)
             return redirect('store')  # Redirect to a home page or dashboard after signup
     else:
@@ -207,3 +226,120 @@ def log_out(request):
    
     return redirect('store')  
 
+def password_reset_request(request):
+    if request.method == "POST":
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data['email']
+            associated_users = User.objects.filter(email=data)
+            
+            if associated_users.exists():
+                # If a user with the email exists, Django will send the email automatically
+                form.save(
+                    request=request,
+                    use_https=True,
+                    email_template_name="store/password_reset_email.html",
+                    subject_template_name="store/password_reset_subject.txt"
+                )
+                messages.success(request, 'Password reset link has been sent to your email.')
+                
+            else:
+                messages.error(request, "We can't find an account with that email.")
+        else:
+            messages.error(request, "Please provide a valid email.")
+    else:
+        form = PasswordResetForm()
+    
+    return render(request, 'store/password_reset.html', {'form': form})
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'store/password_reset_confirm.html'
+    
+
+    def form_valid(self, form):
+        # Add any custom logic here if needed before saving the new password
+        return super().form_valid(form)
+    
+def paypal_create_order(request):
+    if request.method == 'POST':
+        # Get the order total from the POST data
+        data = json.loads(request.body)
+        total = data.get('total')  # Get the total passed from the frontend
+
+        if not total:
+            return JsonResponse({'error': 'Order total is missing'}, status=400)
+    # PayPal API credentials (use environment variables in production)
+    client_id = 'AQ3yaccqvAPhmWJho3j6nqEHEKczDUR7Uy7dvLpK_TXSP3myoIma6OhNHMZuzGKuCBhvOe8NNbxkt1nS'
+    client_secret = 'EPu95benZiO1Ulhon09YzwIDP4zsbDLyTrdjobjqIQqocqhRRz-tmk02yCalfWaniGzZlW3MIObPHSek'
+
+    # Get the access token
+    auth = (client_id, client_secret)
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    data = {'grant_type': 'client_credentials'}
+    token_response = requests.post('https://api.sandbox.paypal.com/v1/oauth2/token', headers=headers, data=data, auth=auth)
+    
+    token = token_response.json().get('access_token')
+    
+    # Create PayPal order
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {token}',
+    }
+    body = {
+        "intent": "CAPTURE",
+        "purchase_units": [{
+            "amount": {
+                "currency_code": "USD",
+                "value": str(total)  # Replace with actual order total
+            }
+        }]
+    }
+
+    response = requests.post(
+        'https://api.sandbox.paypal.com/v2/checkout/orders',
+        headers=headers,
+        json=body
+    )
+
+    if response.status_code == 201:
+        order_id = response.json()['id']
+        return JsonResponse({'id': order_id})
+    else:
+        return JsonResponse({'error': 'Unable to create PayPal order'}, status=500)
+    
+
+def paypal_capture_order(request, order_id):
+    # PayPal API credentials (use environment variables in production)
+    client_id = 'AQ3yaccqvAPhmWJho3j6nqEHEKczDUR7Uy7dvLpK_TXSP3myoIma6OhNHMZuzGKuCBhvOe8NNbxkt1nS'
+    client_secret = 'EPu95benZiO1Ulhon09YzwIDP4zsbDLyTrdjobjqIQqocqhRRz-tmk02yCalfWaniGzZlW3MIObPHSek'
+
+    # Get the access token
+    auth = (client_id, client_secret)
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    data = {'grant_type': 'client_credentials'}
+    token_response = requests.post(
+        'https://api.sandbox.paypal.com/v1/oauth2/token',
+        headers=headers,
+        data=data,
+        auth=auth
+    )
+
+    token = token_response.json().get('access_token')
+    
+    if not token:
+        return JsonResponse({'error': 'Unable to authenticate with PayPal'}, status=500)
+
+    # Capture the PayPal order
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {token}',  # Use the token received
+    }
+
+    capture_url = f'https://api.sandbox.paypal.com/v2/checkout/orders/{order_id}/capture'
+    response = requests.post(capture_url, headers=headers)
+
+    if response.status_code == 201:
+        return JsonResponse(response.json())  # Send the captured order details back to the frontend
+    else:
+        return JsonResponse({'error': 'Unable to capture PayPal order'}, status=500)

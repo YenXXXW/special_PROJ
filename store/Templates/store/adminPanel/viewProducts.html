@@ -100,5 +100,51 @@
             <span class="sr-only">Next</span>
         </a>
     </div>
+{% block shopAdminPanelContent%}
+<div class="row">
+    {% for product in products %}
+    <div>
+    <img src={{product.image_url}} alt="product-imgae" width="200">
+    <p>{{product.name}}</p>
+    <p>{{product.price}}<p>
+    <p>{{product.description}}<p>
+    <a href="{% url 'edit-product' product.id %}"><button>Edit</button></a>
+    <button class="adminDeleteButton" data-product-id={{ product.id }}>Delete</button>
+    </div>
+
+    
+    {% endfor %}
+    <script>
+        const adminDeleteButtons = document.querySelectorAll(".adminDeleteButton");
+        adminDeleteButtons.forEach(button => {
+            button.addEventListener("click", handleClick);
+        });
+    
+        function handleClick(event) {
+            const clickedButton = event.currentTarget; 
+            const productId = clickedButton.dataset.productId; 
+            DeleteProduct(productId) 
+        }
+
+        function DeleteProduct(productId) {
+            const url = '/delete-product'
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    'X-CSRFToken':csrftoken,
+                    'Content-Type': 'application/json',
+                },
+                body:JSON.stringify({ // Convert the object to a JSON string
+                    "id": productId
+                })
+
+            }).then (res => {
+                if(res.status === 200) {
+                    window.alert("product deleted successfully")
+                    location.reload()
+                }
+            })
+        }
+    </script>
 </div>
 {% endblock %}
