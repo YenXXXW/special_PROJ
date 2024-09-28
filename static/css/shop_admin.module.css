@@ -108,10 +108,14 @@ form#productContainerForm {
     top: 10%;
     left: 30%;
 
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #171bf7;
+    display: inline-block; /* Ensures the width wraps around content */
+    max-height:max-content;
+    max-width: 100%; /* Optional, to allow wrapping within a parent container */
+    padding: 20px; /* Keeps padding for content spacing */
+    margin: 0 auto; /* Centers the element horizontally */
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+
+    
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     font-family: Arial, sans-serif;
@@ -187,6 +191,7 @@ form#productContainerForm {
 }
 
 /* Hover effect for the button */
-button#addProductButton:hover {
-    background-color: #0056b3;
+button#productContainerForm {
+    background: linear-gradient(135deg, #FFC107, #FF5722); /* Reverse gradient on hover */
+    transform: scale(1.05); /* Slight zoom-in effect */
 }

@@ -1,26 +1,104 @@
 {% extends "store/adminPanel/adminPanelLayout.html" %}
 {% load static %}
+{% block extra_css %}
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        /* Customize the carousel controls */
+        .carousel-control-prev,
+        .carousel-control-next {
+            background-color: black; /* Attractive button color */
+            color: white; /* Icon color */
+            border-radius: 50%; /* Circular shape */
+            width: 50px; /* Set width */
+            height: 50px; /* Set height */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+            transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+            top: 50%; /* Center vertically */
+            transform: translateY(-50%); /* Adjust position */
+            z-index: 10; /* Ensure buttons are above other elements */
+        }
 
+        .carousel-control-prev:hover,
+        .carousel-control-next:hover {
+            background-color: #0056b3; /* Darker shade on hover */
+            transform: scale(1.1); /* Slight zoom effect */
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: transparent; /* Transparent background for icons */
+            border-radius: 50%; /* Ensure icons have a rounded background */
+        }
+
+        .carousel-control-prev-icon::before,
+        .carousel-control-next-icon::before {
+            font-size: 20px; /* Size of the icons */
+            color: white; /* Color of the icons */
+        }
+
+        /* Additional styles for carousel */
+        .carousel-inner {
+            padding: 20px 0; /* Space above and below the carousel */
+        }
+
+        .card {
+            transition: transform 0.2s; /* Smooth hover effect on cards */
+        }
+
+        .card:hover {
+            transform: scale(1.05); /* Slightly enlarge on hover */
+        }
+
+        /* Position controls beside the cards */
+        .carousel-control-prev {
+            left: -60px; /* Move it left to be beside the card */
+        }
+
+        .carousel-control-next {
+            right: -60px; /* Move it right to be beside the card */
+        }
+
+        /* Center align the carousel */
+        .carousel {
+            display: flex;
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+        }
+    </style>
+{% endblock %}
 {% block shopAdminPanelContent %}
-<div class="row full-width-row">
-    {% for product in products %}
-    <div>
-        <img src={{product.image_url}} alt="product-image" width="200">
-        <p>{{product.name}}</p>
-        <p>{{product.price}} Ks</p>
-        <p>description: {{product.description}}</p>
-        <a href="{% url 'edit-product' product.id %}"><button>Edit</button></a>
+<div class="container">
+    <div id="productCarousel" class="carousel slide" data-ride="carousel" data-interval="3000"> <!-- Set interval for auto-switching -->
+        <div class="carousel-inner">
+            {% for product in products %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-4">
+                        <div class="card" style="margin: 15px;">
+                            <img src="{{ product.image_url }}" class="card-img-top" alt="product-image">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">{{ product.price }} Ks</p>
+                                <p class="card-text">Description: {{ product.description }}</p>
+                                <a href="{% url 'edit-product' product.id %}" class="btn btn-primary">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <a class="carousel-control-prev" href="#productCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#productCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
     </div>
-    {% endfor %}
 </div>
 {% endblock %}
-
-<style>
-    .full-width-row {
-        width: 100vw;
-        margin: 0;
-        padding: 20px;
-        background-color: #f9f9f9; /* adjust the background color as needed */
-        box-sizing: border-box;
-    }
-</style>
