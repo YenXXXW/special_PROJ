@@ -117,66 +117,78 @@ def updateItem(request):
 
     return JsonResponse('Item was added', safe=False)
 
+from django.shortcuts import render, redirect
+
 def processOrder(request):
-    transcation_id =datetime.datetime.now().timestamp()
+    transaction_id = datetime.datetime.now().timestamp()
     data = json.loads(request.body)
+
     if request.user.is_authenticated:
         customer = request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, complete=False)
-
-       
     else:
-        print('User is not logged in')
-
-        print('COOKIES:',request.COOKIES)
         name = data['form']['name']
         email = data['form']['email']
-
+        
+        # Handle anonymous user and cookie data
         cookieData = cookieCart(request)
         items = cookieData['items']
         
-        customer, created = Customer.objects.get_or_create(
-            email=email,
-            )
+        customer, created = Customer.objects.get_or_create(email=email)
         customer.name = name
         customer.save()
 
-        order = Order.objects.create(
-            customer=customer,
-            complete=False,
-            )
+        order = Order.objects.create(customer=customer, complete=False)
         for item in items:
             product = Product.objects.get(id=item['product']['id'])
-
             orderItem = OrderItem.objects.create(
                 product=product,
                 order=order,
-                quantity= item['quantity']
+                quantity=item['quantity']
             )
-    total= float(data ['form']['total'])
-    order.transactoinId=transcation_id
+
+    # List to store items with insufficient stock
+    insufficient_stock_items = []
+
+    # Check if each ordered item has enough stock
+    for item in order.orderitem_set.all():
+        product = item.product
+        if product.quantity < item.quantity:
+            insufficient_stock_items.append({
+                'product': product.name,
+                'available_quantity': product.quantity
+            })
+
+    # If there are any items with insufficient stock, return them to the frontend
+    if insufficient_stock_items:
+        return JsonResponse({'error': 'Not enough stock for some items', 'insufficient_items': insufficient_stock_items}, status=400)
+
+    # If everything is fine, process the order
+    total = float(data['form']['total'])
+    order.transaction_id = transaction_id
+
     if total == order.get_cart_total:
-        order.complete=True
-        orderItems = order.orderitem_set.all()
-        for orderItem in orderItems:
-            product = orderItem.product
-            if product.quantity >= orderItem.quantity:
-                product.quantity -= orderItem.quantity
-                product.save()
-            else:
-                # If not enough stock, return error message
-                return JsonResponse({'error': f"{product.name} is only available in quantity {product.quantity}"}, safe=False)
+        order.complete = True
+        # Reduce stock for each product in the order
+        for item in order.orderitem_set.all():
+            product = item.product
+            product.stock -= item.quantity
+            product.save()
+
     order.save()
+
     ShippingAddress.objects.create(
-            customer=customer,
-            order=order,
-            address=data['shipping']['address'],
-            city=data['shipping']['city'],
-            state=data['shipping']['state'],
-            zipcode=data['shipping']['zipcode'],
-        )
+        customer=customer,
+        order=order,
+        address=data['shipping']['address'],
+        city=data['shipping']['city'],
+        state=data['shipping']['state'],
+        zipcode=data['shipping']['zipcode'],
+    )
     
-    return JsonResponse('Payment complete', safe=False) 
+    return JsonResponse('Payment complete', safe=False)
+
+
 
 
 def product_details(request, product_id):
@@ -261,85 +273,3 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
         # Add any custom logic here if needed before saving the new password
         return super().form_valid(form)
     
-def paypal_create_order(request):
-    if request.method == 'POST':
-        # Get the order total from the POST data
-        data = json.loads(request.body)
-        total = data.get('total')  # Get the total passed from the frontend
-
-        if not total:
-            return JsonResponse({'error': 'Order total is missing'}, status=400)
-    # PayPal API credentials (use environment variables in production)
-    client_id = 'AQ3yaccqvAPhmWJho3j6nqEHEKczDUR7Uy7dvLpK_TXSP3myoIma6OhNHMZuzGKuCBhvOe8NNbxkt1nS'
-    client_secret = 'EPu95benZiO1Ulhon09YzwIDP4zsbDLyTrdjobjqIQqocqhRRz-tmk02yCalfWaniGzZlW3MIObPHSek'
-
-    # Get the access token
-    auth = (client_id, client_secret)
-    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-    data = {'grant_type': 'client_credentials'}
-    token_response = requests.post('https://api.sandbox.paypal.com/v1/oauth2/token', headers=headers, data=data, auth=auth)
-    
-    token = token_response.json().get('access_token')
-    
-    # Create PayPal order
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {token}',
-    }
-    body = {
-        "intent": "CAPTURE",
-        "purchase_units": [{
-            "amount": {
-                "currency_code": "USD",
-                "value": str(total)  # Replace with actual order total
-            }
-        }]
-    }
-
-    response = requests.post(
-        'https://api.sandbox.paypal.com/v2/checkout/orders',
-        headers=headers,
-        json=body
-    )
-
-    if response.status_code == 201:
-        order_id = response.json()['id']
-        return JsonResponse({'id': order_id})
-    else:
-        return JsonResponse({'error': 'Unable to create PayPal order'}, status=500)
-    
-
-def paypal_capture_order(request, order_id):
-    # PayPal API credentials (use environment variables in production)
-    client_id = 'AQ3yaccqvAPhmWJho3j6nqEHEKczDUR7Uy7dvLpK_TXSP3myoIma6OhNHMZuzGKuCBhvOe8NNbxkt1nS'
-    client_secret = 'EPu95benZiO1Ulhon09YzwIDP4zsbDLyTrdjobjqIQqocqhRRz-tmk02yCalfWaniGzZlW3MIObPHSek'
-
-    # Get the access token
-    auth = (client_id, client_secret)
-    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-    data = {'grant_type': 'client_credentials'}
-    token_response = requests.post(
-        'https://api.sandbox.paypal.com/v1/oauth2/token',
-        headers=headers,
-        data=data,
-        auth=auth
-    )
-
-    token = token_response.json().get('access_token')
-    
-    if not token:
-        return JsonResponse({'error': 'Unable to authenticate with PayPal'}, status=500)
-
-    # Capture the PayPal order
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {token}',  # Use the token received
-    }
-
-    capture_url = f'https://api.sandbox.paypal.com/v2/checkout/orders/{order_id}/capture'
-    response = requests.post(capture_url, headers=headers)
-
-    if response.status_code == 201:
-        return JsonResponse(response.json())  # Send the captured order details back to the frontend
-    else:
-        return JsonResponse({'error': 'Unable to capture PayPal order'}, status=500)

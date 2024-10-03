@@ -22,6 +22,5 @@ urlpatterns=[
     path('get-orders', shopAdminPanelOrderViews.getOrders, name="getOrders"),
     path('password_reset/', views.password_reset_request, name='password_reset'),
     path('reset/<uidb64>/<token>/', views.CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    path('paypal/create/', views.paypal_create_order, name='paypal_create_order'),
-    path('paypal/capture/<str:order_id>/', views.paypal_capture_order, name='paypal_capture_order'),
+    
 ]

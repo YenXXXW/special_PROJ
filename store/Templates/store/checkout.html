@@ -87,57 +87,56 @@
     document.getElementById('make-payment').addEventListener('click',function(e){
         submitFormData()
     })
-    function submitFormData()
-    {
-        console.log('Payment button clicked')
-        var userFormData={
-            'name':null,
-            'email':null,
-            'total':total,
-
-        }
-        var shippingInfo={
-            'address':null,
-            'city':null,
-            'state':null,
-            'zipcode':null,
-            
-        }
-        shippingInfo.address=form.address.value
-        shippingInfo.city=form.city.value
-        shippingInfo.state=form.state.value
-        shippingInfo.zipcode=form.zipcode.value
-        if(user == 'AnonymousUser')
-        {
-            userFormData.name=form.name.value
-            userFormData.email=form.email.value
-
-        }
-
-        var url = '/process_order/'
-        fetch(url,{
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json',
-                'X-CSRFToken':csrftoken,
-            },
-            body:JSON.stringify({'form':userFormData,'shipping':shippingInfo})
-
-        
-        })
-        .then((response) => {
-            return response.json()
-        })
-
-        .then((data) => {
-            console.log('Success:',data);
-            alert("Transcation completed");
-            window.location.href="{% url 'store' %}";
-        
-
-        })
-        
-
+    function submitFormData() {
+    console.log('Payment button clicked');
+    var userFormData = {
+        'name': null,
+        'email': null,
+        'total': total,
+    };
+    var shippingInfo = {
+        'address': form.address.value,
+        'city': form.city.value,
+        'state': form.state.value,
+        'zipcode': form.zipcode.value,
+    };
+    if (user == 'AnonymousUser') {
+        userFormData.name = form.name.value;
+        userFormData.email = form.email.value;
     }
+
+    var url = '/process_order/';
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({ 'form': userFormData, 'shipping': shippingInfo })
+    })
+    .then((response) => {
+        if (!response.ok) {
+            return response.json().then((data) => {
+                throw new Error(JSON.stringify(data.insufficient_items));
+            });
+        }
+        return response.json();
+    })
+    .then((data) => {
+        console.log('Success:', data);
+        alert("Transaction completed");
+        window.location.href = "{% url 'store' %}";
+    })
+    .catch((error) => {
+        const insufficientItems = JSON.parse(error.message);
+        let errorMessage = 'The following items do not have enough stock:\n';
+        insufficientItems.forEach(item => {
+            errorMessage += `${item.product}: Available ${item.available_quantity}\n`;
+        });
+        alert(errorMessage);
+    });
+}
+
+
 </script>
 {% endblock content %}

@@ -19,6 +19,11 @@
             transform: translateY(-50%);
             cursor: pointer;
         }
+        .error-message {
+            color: red;
+            font-size: 12px;
+            display: none;
+        }
     </style>
     
 </head>
@@ -35,7 +40,8 @@
             {% csrf_token %}
             <div class="form-group">
                 <label for="username">E-mail:</label><br>
-                <input type="text" id="username" name="username" required class="form-control">
+                <input type="email" id="username" name="username" required class="form-control">
+                <div id="emailError" class="error-message">Please enter a valid email address.</div>
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
@@ -51,6 +57,18 @@
         <div><a href="{% url 'password_reset'%}">Forget password?</a></div>
     </div>
     <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            const emailField = document.getElementById('username');
+            const emailError = document.getElementById('emailError');
+            const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,6}$/;
+
+            if (!emailField.value.match(emailPattern)) {
+                emailError.style.display = 'block';
+                event.preventDefault();  // Prevent form submission
+            } else {
+                emailError.style.display = 'none';
+            }
+        });
         toggle=document.querySelector('.toggle-password');
         toggle.addEventListener('click', function() {
             const passwordField = document.getElementById("password");
