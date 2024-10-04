@@ -106,6 +106,10 @@
                 <input id="description" name="description" value="{{ product.description }}">
             </div>
             <div>
+                <label for="quantity">Quantity</label>
+                <input name="quantity" type="number" id="quantity" value="{{ product.quantity}}">
+            </div>
+            <div>
                 <img src="{{ product.imageURL }}" width='200' id="productImg">
                 <input type="file" id="imageInput" accept="image/jpeg, image/png, image/webp" name="image">
             </div>
