@@ -1,72 +1,122 @@
 {% extends "store/adminPanel/adminPanelLayout.html" %}
 {% load static %}
-{% block shopAdminPanelContent%}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/shop_admin.module.css' %}">
+    <style>
+        /* Product grid styling */
+        .product-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
 
-<style>
-    /* Adding margin between columns */
-    #products-container {
-	padding-bottom: 100px;
-}
-.products {
-	background-image: linear-gradient(to bottom, rgb(255, 246, 246m 0), rgba(0, 0, 0, 0.5));
-	backdrop-filter: blur(10px);
-	background-size: 100% 300px; /* adjust the height to your needs */
-	background-position: 0% 100%;
-	
-}
-.col-lg-4, .col-lg-6, .col-lg-8, .col-lg-12{
-	margin-bottom: 30px;
-}
-.product{
-	border-radius: 0 0 4px 4px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	color: #8f720e;
-	transition: transform 0.4s opacity 1s ease-in;
-	width: 250px;
-	height: 350px;
-	padding-bottom: 1rem;
-	transition: top 0.3s ease-in 0.3s, z-index 0.3s ease-in 0.3s, box-shadow ease-in 0.3s;
-	/* overflow-x: hidden; */
-}
+        .product-card {
+            width: 300px;
+            margin: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+            border: none;
+        }
 
-.product-img-container {
-	width: 100%;
-	height: 100%;
-	border-radius: 5px;	
-}
+        .product-card:hover {
+            transform: scale(1.05);
+        }
 
-.product-img{
-	width: 100%;
-	height: 100%;
-	object-fit: contain;
-	
-}
-.col-contianer {
-	position: relative;
-}
+        /* Ensure all product images look good by limiting the aspect ratio */
+        .product-card img {
+            max-height: 200px; /* Adjust this for a uniform image size */
+            width: 100%;
+            object-fit: cover;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
 
+        .product-card .card-body {
+            text-align: center;
+        }
 
-</style>
+        .product-card .card-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
 
-<div class="col-lg-9" id="products-container">
-    <!-- Product list will be updated here by JavaScript -->
-        <div class="row gy-5">
-            {% for product in products %}
-                <div class="col-md-4 col-contianer">
-                    <div class="product">
-                        
-                        <div  class="product-img-container">
-                            <img src="{{product.image_url}}" alt="{{ product.name }}" class="product-img">
-                        </div>
-                        <h3 id="product-price">{{ product.name }}</h3>
-                        <p>{{ product.price }} Ks</p>
-                        <p>{{product.description}}</p>
-                        <a href="{% url 'edit-product' product.id %}"><button>Edit</button></a>
-                    </div>
-                </div>
-            {% endfor %}
+        .product-card .card-text {
+            font-size: 16px;
+        }
+
+        /* Button styling with border-radius */
+        .product-card .btn {
+            margin-top: 10px;
+            border-radius: 12px; /* Add smooth corners to buttons */
+        }
+
+        /* Adjust sidebar if needed */
+        .sidebar-wrapper {
+            min-width: 250px;
+        }
+
+        .sidebar-heading {
+            font-weight: bold;
+            padding: 15px;
+        }
+
+        /* Ensure container can scroll */
+        .container {
+            max-height: 80vh; /* Set max height for container */
+            overflow-y: auto; /* Enable vertical scrolling */
+            padding-right: 15px;
+        }
+    </style>
+{% endblock %}
+
+{% block shopAdminPanelContent %}
+<div class="container">
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="card product-card">
+            <img src="{{ product.image_url }}" class="card-img-top" alt="product-image">
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">{{ product.price }} Ks</p>
+                <p class="card-text">{{ product.description }}</p>
+                <p class="card-text">Quantity: {{ product.quantity}}</p>
+                <a href="{% url 'edit-product' product.id %}" class="btn btn-primary">Edit</a>
+                <button class="btn btn-danger adminDeleteButton" data-product-id="{{ product.id }}">Delete</button>
+            </div>
         </div>
+        {% endfor %}
+    </div>
+    <script>
+        const adminDeleteButtons = document.querySelectorAll(".adminDeleteButton");
+        adminDeleteButtons.forEach(button => {
+            button.addEventListener("click", handleClick);
+        });
+    
+        function handleClick(event) {
+            const clickedButton = event.currentTarget;
+            const productId = clickedButton.dataset.productId;
+            DeleteProduct(productId);
+        }
+
+        function DeleteProduct(productId) {
+            const url = '/delete-product';
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "id": productId
+                })
+            }).then(res => {
+                if (res.status === 200) {
+                    window.alert("Product deleted successfully");
+                    location.reload();
+                }
+            });
+        }
+    </script>
 </div>
 {% endblock %}

@@ -1,129 +1,141 @@
 {% extends "store/adminPanel/adminPanelLayout.html" %}
 {% load static %}
-{% block shopAdminPanelContent%}
+{% block shopAdminPanelContent %}
 <style>
-    /* Form container styling */
-#productContainerForm {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    max-width: 400px;
-    margin: auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+    .row {
+        display: flex;
+        justify-content: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+    }
 
-/* Label styling */
-label {
-    font-size: 16px;
-    font-weight: 500;
-    margin-bottom: 5px;
-    color: #333;
-}
+    
 
-/* Input fields styling */
-input[type="text"],
-input[type="number"],
-input[type="file"] {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
-    width: 100%;
-    box-sizing: border-box;
-}
+    #productContainerForm label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+        
+        color: black;
+        margin-left: 80px;
+    }
 
-/* Image styling */
-#productImg {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-top: 10px;
-    max-width: 100%;
-    height: auto;
-}
-
-/* Update button styling */
-#updateProductButton {
-    background-color: #28a745;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-    margin-top: 10px;
-}
-
-/* Update button hover effect */
-#updateProductButton:hover {
-    background-color: #218838;
-}
-
-/* Adjust input field focus style */
-input:focus {
-    border-color: #007bff;
-    outline: none;
-}
-
-/* Form responsiveness */
-@media (max-width: 768px) {
-    #productContainerForm {
+    #productContainerForm input, #productContainerForm textarea {
         width: 100%;
         padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
     }
-}
+
+    #productContainerForm textarea {
+        height: 120px;
+    }
+
+    #productContainerForm #productImg {
+        display: block;
+        margin: 10px auto;
+        border-radius: 10px;
+    }
+
+    #productContainerForm #imageInput {
+        display: block;
+        margin-bottom: 15px;
+        background-color: white;
+    }
+
+    #productContainerForm #updateProductButton {
+        background-color: green;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 85%;
+        transform: translateX(-50%);
+    }
+
+    #productContainerForm #updateProductButton:hover {
+        background-color: black;
+    }
+
+
+
+    form#productContainerForm div {
+        width: 100%;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
 </style>
-<div class="row">
-    <form id="productContainerForm">
-        {% csrf_token %}
-        <label htmlFor="name">name</label>
-        <input id="name" name="name" value="{{ product.name }}">
-        <label htmlFor="price">price</label>
-        <input id="price" name="price" value="{{ product.price }}">
-        <label htmlFor="description">description<label>
-        <input id="description" name="description" value="{{ product.description }}">
-        <img src="{{ product.imageURL }}" width='200' id="productImg" >
-        <input type="file" id="imageInput" accept="image/jpeg, image/png, image/webp" name="image" >
-        <button id="updateProductButton">Update</button>
-    </form>
-    <script>
-        const updateButton = document.getElementById("updateProductButton")
-        const ImageInput = document.getElementById("imageInput")
-        const productImage = document.getElementById("productImg")
-        ImageInput.addEventListener("change", (e) => {
-            const uploadedImage = e.target.files[0]
-            if (uploadedImage) {
-                const reader = new FileReader()
 
-                reader.onload = (e) => {
-                    productImage.src = e.target.result
+<div class="kk">
+    <div class="row">
+        <form id="productContainerForm">
+            {% csrf_token %}
+            <div>
+                <label for="name">Name</label>
+                <input id="name" name="name" value="{{ product.name }}">
+            </div>
+            <div>
+                <label for="price">Price</label>
+                <input id="price" name="price" value="{{ product.price }}">
+            </div>
+            <div>
+                <label for="description">Description</label>
+                <input id="description" name="description" value="{{ product.description }}">
+            </div>
+            <div>
+                <label for="quantity">Quantity</label>
+                <input name="quantity" type="number" id="quantity" value="{{ product.quantity}}">
+            </div>
+            <div>
+                <img src="{{ product.imageURL }}" width='200' id="productImg">
+                <input type="file" id="imageInput" accept="image/jpeg, image/png, image/webp" name="image">
+            </div>
+            <div>
+                <button id="updateProductButton">Update</button>
+            </div>
+        </form>
+
+        <script>
+            const updateButton = document.getElementById("updateProductButton");
+            const imageInput = document.getElementById("imageInput");
+            const productImage = document.getElementById("productImg");
+
+            imageInput.addEventListener("change", (e) => {
+                const uploadedImage = e.target.files[0];
+                if (uploadedImage) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        productImage.src = e.target.result;
+                    };
+                    reader.readAsDataURL(uploadedImage);
                 }
+            });
 
-                reader.readAsDataURL(uploadedImage)
-            }
-        })
-        
-        updateButton.addEventListener("click", (e)=> {  
-        console.log("this is working")
-        e.preventDefault()
-
-        const formData = new FormData(productContainerForm)
-        const id = {{ product.id }} 
-        console.log()
-        formData.append("id", id.toString() )
-        var url=`/edit-product/${id}`
-        fetch(url, {
-            method: "POST",
-            headers: {
-                'X-CSRFToken':csrftoken,
-            }, body:formData
-        }).then(res => res.json())
-        .then(data => console.log(data))
-        })
-    </script>
+            updateButton.addEventListener("click", (e) => {
+                e.preventDefault();
+            const formData = new FormData(productContainerForm)
+            const id = {{ product.id }} 
+            console.log()
+            formData.append("id", id.toString() )
+            var url=`/edit-product/${id}`
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    'X-CSRFToken':csrftoken,
+                }, body:formData
+            }).then(res => {
+                if(res.status === 200) {
+                    window.alert("product edited successfully")
+                    window.location.href = "/shop_admin_panel"
+                }
+            })
+            })
+        </script>
+    </div>
 </div>
 {% endblock %}

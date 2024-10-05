@@ -1,0 +1,8 @@
+{
+    "workbench.externalBrowser": "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
+    "debug.javascript.defaultRuntimeExecutable": {
+
+        "pwa-node": "node"
+    }
+
+}
