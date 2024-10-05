@@ -23,7 +23,9 @@ def getAllProducts(request):
                 'name': product.name,
                 'price': product.price,
                 'image_url': product.image.url if product.image else None,  # Get the URL of the image if it exists
-                'description': product.description
+                'description': product.description,
+                'quantity': product.quantity,
+                'quality': product.quality
             }
             for product in products
         ]
@@ -76,10 +78,11 @@ def edit_product(request, product_id):
         try:
             id = request.POST.get("id")
             name = request.POST.get("name")
+            quantity= request.POST.get("quantity")
             price = request.POST.get("price")
             description = request.POST.get("description")
             image = request.FILES.get("image")
-            if not all([name, price, id, description ]):
+            if not all([name, quantity, price, id, description ]):
                 return JsonResponse({"error": "The required fields are not present"}, status=400)
             product = Product.objects.filter(id=id).first()
             if not product:
@@ -91,6 +94,10 @@ def edit_product(request, product_id):
             except ValueError:
                 return JsonResponse({"error": "Price must be the interger type"}, status=400)
                 
+            try:
+                product.quantity=  int(quantity)
+            except ValueError:
+                return JsonResponse({"error": "Quantity must be the interger type"}, status=400)
             if image:
                 if image.size > 5 * 1024 * 1024:
                     return JsonResponse({"error": "The image size should not exceed 5mb"}, status=400)
@@ -117,13 +124,14 @@ def addProduct(request):
             return JsonResponse({"error": "Shop does not exist"}, status=400)
 
         name = request.POST.get("name")
+        quantity= request.POST.get("quantity")
         price = request.POST.get("price")
         description = request.POST.get("description")
         image = request.FILES.get("image")
         category_name = request.POST.get("category")
         brand =  request.POST.get("brand")
         color= request.POST.get('color')
-        if not all([name, price,  description, image , category_name, brand, color]):
+        if not all([name, price, quantity, description, image , category_name, brand, color]):
             return JsonResponse({"error": "The required fields are not present"}, status=400)
         try:
             price =  int(price)
@@ -143,6 +151,7 @@ def addProduct(request):
             category=category,
             brand= brand,
             color= color,
+            quantity=quantity,
             image=image
         )
         product.save()

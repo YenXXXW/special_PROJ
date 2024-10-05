@@ -29,10 +29,9 @@ class SelectCategoryForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(SelectCategoryForm, self).__init__(*args, **kwargs)
-        self.fields['category'].choices = [(category.id, category.name) for category in Category.objects.all()]
-        # if selected_category:
-        #     self.fields['category'].initial = [int(selected_category)]
- 
+        self.fields['category'].choices = [(category.id, categoryname) for category in Category.objects.all()]
+        # if selectAked_category:
+        #     selectAked_categoryselectAked_categoryselectAked_category].initial = [int(selected_category)]
 
 def store(request):
     selected_category = request.session.get("selected_category", "0")
@@ -44,25 +43,37 @@ def store(request):
     if request.method == "POST" and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         # Process AJAX request
         selected_category = request.POST.get('category')
+        shop_id = request.POST.get('shop_id')
         request.session["selected_category"] = selected_category
-        if selected_category != "0":
+        if selected_category != "0" and shop_id == "all":
             products = Product.objects.filter(category=selected_category)
+        elif selected_category != "0" and shop_id != "all":
+            products = Product.objects.filter(shop=shop_id, category=selected_category)
+        elif selected_category == "0" and shop_id == "all":
+            products= Product.objects.all()
         else:
-            products = Product.objects.all()
+            products = Product.objects.filter(shop=shop_id)
+        
+        def serialize_products(products):
+            return [
+                {
+                    'id': product.id,
+                    'name': product.name,
+                    'price': product.price,
+                    'image_url': product.image.url if product.image else None,
+                    'description': product.description,
+                    'shop_id': product.shop.id if product.shop else None,
+                    'category_id': product.category.id if product.category else None
+                }
+                for product in products
+            ]
 
         # Prepare response data
-        products_data = [
-            {
-                'id': product.id,
-                'name': product.name,
-                'price': product.price,
-                'image_url': product.image.url if product.image else None,  # Get the URL of the image if it exists
-                'description': product.description
-            }
-            for product in products
-        ]
+        products_data = serialize_products(products)
         
         return JsonResponse({'products': products_data})
+    
+    shops = Shop.objects.all()
     
     categories = Category.objects.all()
     context = {
@@ -70,6 +81,8 @@ def store(request):
         'cartItems': cartItems,
         'categories': categories,
         'selected_category': selected_category,
+        'shop_owner': hasattr(request.user, 'shop'),
+        'shops': shops
     }
     
     return render(request, 'store/store.html', context)
@@ -98,8 +111,6 @@ def updateItem(request):
     data = json.loads(request.body)
     productId= data['productID']
     action= data['action']
-    print('Action:',action)
-    print('productId:',productId)
     customer =request.user.customer
     product= Product.objects.get(id=productId)
     order, created = Order.objects.get_or_create(customer=customer, complete=False)
