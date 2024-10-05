@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const productsContainer = document.getElementById('products-container');
         productsContainer.innerHTML = ''; // Clear existing products
         productsContainer.classList.add('col-lg-9')
+        productsContainer.id = "products-container"
         
         const rowElement = document.createElement('div');
         rowElement.classList.add('row', 'gy-5');
@@ -85,8 +86,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         <p>${product.price} Ks</p>
                     <div>
                         
-                        <button class="view_button"><a href="product/${product.id}">View</a></button>
-                        <button data-product="{{product.id}}" data-action="add" class="add-to-cart update-cart ">Add to Cart</button>
+                        <a href="product/${product.id}"><button class="view_button">View</button></a>
+                        <button data-product="${product.id}" data-action="add" class="add-to-cart update-cart ">Add to Cart</button>
                     </div>
                     
                 </div>
@@ -104,5 +105,13 @@ document.addEventListener('DOMContentLoaded', function() {
         selectedShop = this.value;
         updateDateRequest()
     });
+
+    const searchProduct = document.getElementById("navSearchInput")
+    searchProduct.addEventListener('input', handleSearch)
+    
+    function handleSearch(){
+        const searchedProducts = products.filter(product => product.name.includes(searchProduct.value) )
+        updateProducts(searchedProducts)
+    }
 });
 
