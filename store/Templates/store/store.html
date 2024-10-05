@@ -47,7 +47,7 @@
                                         View
                                     </a>
                                     </button>
-                                <button data-product="{{product.id}}" data-action="add" class="btn add-to-cart update-cart">Add to Cart</button>
+                                <button data-product="{{product.id}}" data-action="add" class="add-to-cart update-cart">Add to Cart</button>
                                 </div>
                             </div>
                         </div>
@@ -67,7 +67,8 @@
                             "name": "{{ product.name }}",
                             "price": "{{ product.price }}",
                             "category": "{{product.category_id}}",
-                            'shop_id': "{{product.shop_id}}"
+                            "shop_id": "{{product.shop_id}}",
+                            "image_url": "{{product.image_url}}"
                         }{% if not forloop.last %},{% endif %}
                     {% endfor %}
                 ];
