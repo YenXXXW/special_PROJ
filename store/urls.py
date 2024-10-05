@@ -22,5 +22,5 @@ urlpatterns=[
     path('get-orders', shopAdminPanelOrderViews.getOrders, name="getOrders"),
     path('password_reset/', views.password_reset_request, name='password_reset'),
     path('reset/<uidb64>/<token>/', views.CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    
+    path('delete-product', shopAdminProductsViews.deleteProduct, name='delete-product')
 ]
