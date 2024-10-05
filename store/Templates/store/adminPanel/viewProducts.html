@@ -1,105 +1,90 @@
 {% extends "store/adminPanel/adminPanelLayout.html" %}
 {% load static %}
 {% block extra_css %}
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/shop_admin.module.css' %}">
     <style>
-        /* Customize the carousel controls */
-        .carousel-control-prev,
-        .carousel-control-next {
-            background-color: black; /* Attractive button color */
-            color: white; /* Icon color */
-            border-radius: 50%; /* Circular shape */
-            width: 50px; /* Set width */
-            height: 50px; /* Set height */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
-            transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
-            top: 50%; /* Center vertically */
-            transform: translateY(-50%); /* Adjust position */
-            z-index: 10; /* Ensure buttons are above other elements */
-        }
-
-        .carousel-control-prev:hover,
-        .carousel-control-next:hover {
-            background-color: #0056b3; /* Darker shade on hover */
-            transform: scale(1.1); /* Slight zoom effect */
-        }
-
-        .carousel-control-prev-icon,
-        .carousel-control-next-icon {
-            background-color: transparent; /* Transparent background for icons */
-            border-radius: 50%; /* Ensure icons have a rounded background */
-        }
-
-        .carousel-control-prev-icon::before,
-        .carousel-control-next-icon::before {
-            font-size: 20px; /* Size of the icons */
-            color: white; /* Color of the icons */
-        }
-
-        /* Additional styles for carousel */
-        .carousel-inner {
-            padding: 20px 0; /* Space above and below the carousel */
-        }
-
-        .card {
-            transition: transform 0.2s; /* Smooth hover effect on cards */
-        }
-
-        .card:hover {
-            transform: scale(1.05); /* Slightly enlarge on hover */
-        }
-
-        /* Position controls beside the cards */
-        .carousel-control-prev {
-            left: -60px; /* Move it left to be beside the card */
-        }
-
-        .carousel-control-next {
-            right: -60px; /* Move it right to be beside the card */
-        }
-
-        /* Center align the carousel */
-        .carousel {
+        /* Product grid styling */
+        .product-grid {
             display: flex;
-            align-items: center; /* Center vertically */
-            justify-content: center; /* Center horizontally */
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .product-card {
+            width: 300px;
+            margin: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+            border: none;
+        }
+
+        .product-card:hover {
+            transform: scale(1.05);
+        }
+
+        /* Ensure all product images look good by limiting the aspect ratio */
+        .product-card img {
+            max-height: 200px; /* Adjust this for a uniform image size */
+            width: 100%;
+            object-fit: cover;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .product-card .card-body {
+            text-align: center;
+        }
+
+        .product-card .card-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .product-card .card-text {
+            font-size: 16px;
+        }
+
+        /* Button styling with border-radius */
+        .product-card .btn {
+            margin-top: 10px;
+            border-radius: 12px; /* Add smooth corners to buttons */
+        }
+
+        /* Adjust sidebar if needed */
+        .sidebar-wrapper {
+            min-width: 250px;
+        }
+
+        .sidebar-heading {
+            font-weight: bold;
+            padding: 15px;
+        }
+
+        /* Ensure container can scroll */
+        .container {
+            max-height: 80vh; /* Set max height for container */
+            overflow-y: auto; /* Enable vertical scrolling */
+            padding-right: 15px;
         }
     </style>
 {% endblock %}
+
 {% block shopAdminPanelContent %}
 <div class="container">
-    <div id="productCarousel" class="carousel slide" data-ride="carousel" data-interval="3000"> <!-- Set interval for auto-switching -->
-        <div class="carousel-inner">
-            {% for product in products %}
-            <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                <div class="row justify-content-center">
-                    <div class="col-12 col-md-4">
-                        <div class="card" style="margin: 15px;">
-                            <img src="{{ product.image_url }}" class="card-img-top" alt="product-image">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ product.name }}</h5>
-                                <p class="card-text">{{ product.price }} Ks</p>
-                                <p class="card-text">Description: {{ product.description }}</p>
-                                <a href="{% url 'edit-product' product.id %}" class="btn btn-primary">Edit</a>
-                                 <button class="adminDeleteButton" data-product-id={{ product.id }}>Delete</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="card product-card">
+            <img src="{{ product.image_url }}" class="card-img-top" alt="product-image">
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">{{ product.price }} Ks</p>
+                <p class="card-text">{{ product.description }}</p>
+                <a href="{% url 'edit-product' product.id %}" class="btn btn-primary">Edit</a>
+                <button class="btn btn-danger adminDeleteButton" data-product-id="{{ product.id }}">Delete</button>
             </div>
-            {% endfor %}
         </div>
-        <a class="carousel-control-prev" href="#productCarousel" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#productCarousel" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
+        {% endfor %}
     </div>
     <script>
         const adminDeleteButtons = document.querySelectorAll(".adminDeleteButton");
@@ -108,29 +93,28 @@
         });
     
         function handleClick(event) {
-            const clickedButton = event.currentTarget; 
-            const productId = clickedButton.dataset.productId; 
-            DeleteProduct(productId) 
+            const clickedButton = event.currentTarget;
+            const productId = clickedButton.dataset.productId;
+            DeleteProduct(productId);
         }
 
         function DeleteProduct(productId) {
-            const url = '/delete-product'
+            const url = '/delete-product';
             fetch(url, {
                 method: "POST",
                 headers: {
-                    'X-CSRFToken':csrftoken,
+                    'X-CSRFToken': csrftoken,
                     'Content-Type': 'application/json',
                 },
-                body:JSON.stringify({ // Convert the object to a JSON string
+                body: JSON.stringify({
                     "id": productId
                 })
-
-            }).then (res => {
-                if(res.status === 200) {
-                    window.alert("product deleted successfully")
-                    location.reload()
+            }).then(res => {
+                if (res.status === 200) {
+                    window.alert("Product deleted successfully");
+                    location.reload();
                 }
-            })
+            });
         }
     </script>
 </div>
