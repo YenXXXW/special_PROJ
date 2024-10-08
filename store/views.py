@@ -29,7 +29,7 @@ class SelectCategoryForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(SelectCategoryForm, self).__init__(*args, **kwargs)
-        self.fields['category'].choices = [(category.id, categoryname) for category in Category.objects.all()]
+        self.fields['category'].choices = [(category.id, category.name) for category in Category.objects.all()]
         # if selectAked_category:
         #     selectAked_categoryselectAked_categoryselectAked_category].initial = [int(selected_category)]
 
@@ -128,37 +128,44 @@ def updateItem(request):
 
     return JsonResponse('Item was added', safe=False)
 
-from django.shortcuts import render, redirect
+
 
 def processOrder(request):
-    transaction_id = datetime.datetime.now().timestamp()
+    transcation_id =datetime.datetime.now().timestamp()
     data = json.loads(request.body)
-
     if request.user.is_authenticated:
         customer = request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, complete=False)
+
+       
     else:
+        print('User is not logged in')
+
+        print('COOKIES:',request.COOKIES)
         name = data['form']['name']
         email = data['form']['email']
-        
-        # Handle anonymous user and cookie data
+
         cookieData = cookieCart(request)
         items = cookieData['items']
         
-        customer, created = Customer.objects.get_or_create(email=email)
+        customer, created = Customer.objects.get_or_create(
+            email=email,
+            )
         customer.name = name
         customer.save()
 
-        order = Order.objects.create(customer=customer, complete=False)
+        order = Order.objects.create(
+            customer=customer,
+            complete=False,
+            )
         for item in items:
             product = Product.objects.get(id=item['product']['id'])
+
             orderItem = OrderItem.objects.create(
                 product=product,
                 order=order,
-                quantity=item['quantity']
+                quantity= item['quantity']
             )
-
-    # List to store items with insufficient stock
     insufficient_stock_items = []
 
     # Check if each ordered item has enough stock
@@ -169,36 +176,34 @@ def processOrder(request):
                 'product': product.name,
                 'available_quantity': product.quantity
             })
+            item.quantity = product.quantity
+            item.save()
+            if product.quantity <= 0:
+                item.delete()
+           
 
     # If there are any items with insufficient stock, return them to the frontend
     if insufficient_stock_items:
         return JsonResponse({'error': 'Not enough stock for some items', 'insufficient_items': insufficient_stock_items}, status=400)
-
-    # If everything is fine, process the order
-    total = float(data['form']['total'])
-    order.transaction_id = transaction_id
-
+    total= float(data ['form']['total'])
+    order.transactoinId=transcation_id
     if total == order.get_cart_total:
-        order.complete = True
-        # Reduce stock for each product in the order
+        order.complete=True
         for item in order.orderitem_set.all():
             product = item.product
-            product.stock -= item.quantity
+            product.quantity -= item.quantity
             product.save()
-
     order.save()
-
     ShippingAddress.objects.create(
-        customer=customer,
-        order=order,
-        address=data['shipping']['address'],
-        city=data['shipping']['city'],
-        state=data['shipping']['state'],
-        zipcode=data['shipping']['zipcode'],
-    )
+            customer=customer,
+            order=order,
+            address=data['shipping']['address'],
+            city=data['shipping']['city'],
+            state=data['shipping']['state'],
+            zipcode=data['shipping']['zipcode'],
+        )
     
-    return JsonResponse('Payment complete', safe=False)
-
+    return JsonResponse('Payment complete', safe=False) 
 
 
 
