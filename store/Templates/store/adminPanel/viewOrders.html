@@ -1,0 +1,26 @@
+{% extends "store/adminPanel/adminPanelLayout.html" %}
+{% load static %}
+{% block shopAdminPanelContent %}
+<div>
+    <table>
+        <th>
+            <td>Name</td>
+            <td>Email</td>
+            <td>Address</td>
+            <td>Date ordered</td>
+            <td>Action</td>
+        </th>
+            {% for order in order_data %}
+            <tr>
+                <td>{{ order.customer_name}}</td>
+                <td>{{ order.customer_email }}</td>
+                <td>{{ order.shipping_address.address}}</td>
+                <td>{{ order.date_ordered}}</td>
+                <td><button data-order-id={{ order.id}}>View Order</td></td>
+            </tr>
+            {% endfor %}
+    </table>
+    <script></script>
+</div>
+
+{% endblock %}

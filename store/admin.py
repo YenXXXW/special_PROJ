@@ -8,6 +8,7 @@ admin.site.register(Order)
 admin.site.register(OrderItem)
 admin.site.register(Product)
 admin.site.register(ShippingAddress)
+admin.site.register(ShopOrder)
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'username', 'email')
