@@ -16,6 +16,7 @@ def getOrders(request):
             'customer_email': shopOrder.order.customer.email,
             'completed': shopOrder.order.complete,
             'date_ordered': shopOrder.order.date_ordered,
+            'status': shopOrder.status,
             'products': [
                 {
                     'product_name': item.product.name if item.product else 'No product',
@@ -40,7 +41,6 @@ def getOrders(request):
 
 def oderDetails(request, order_id):
     shop_order= ShopOrder.objects.get(id=order_id)
-    print(shop_order)
     if not shop_order:
         return JsonResponse({"message": "Order not found"}, status=404)
     order_items = OrderItem.objects.filter(order=shop_order.order, order__shop_orders__shop=shop_order.shop)
@@ -49,6 +49,7 @@ def oderDetails(request, order_id):
     product_data = [
         {
             "product_id": item.product.id,
+            'image': item.product.imageURL,
             "name": item.product.name,
             "price": item.product.price,
             "quantity": item.quantity,
@@ -58,6 +59,6 @@ def oderDetails(request, order_id):
     ]
     print(product_data)
     context = {
-        "prodcut_data": product_data
+        "product_data": product_data
     }
     return render(request, 'store/adminPanel/orderDetails.html', context)
