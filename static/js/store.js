@@ -47,6 +47,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
+        const searchProduct = document.getElementById("navSearchInput")
+        searchProduct.value = ''
             if (this.checked) {
                 // Uncheck all other checkboxes
                 checkboxes.forEach(otherCheckbox => {
@@ -143,6 +145,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('shopSelect').addEventListener('change', function() {
         selectedShop = this.value;
         sessionStorage.setItem('selectedShop', selectedShop)
+        const searchProduct = document.getElementById("navSearchInput")
+        searchProduct.value = ''
         updateDateRequest()
     });
 
