@@ -9,7 +9,8 @@
                 <th style="padding: 12px; border-bottom: 2px solid #ccc; border-right: 1px solid #ddd;">Email</th>
                 <th style="padding: 12px; border-bottom: 2px solid #ccc; border-right: 1px solid #ddd;">Address</th>
                 <th style="padding: 12px; border-bottom: 2px solid #ccc; border-right: 1px solid #ddd;">Date ordered</th>
-                <th style="padding: 12px; border-bottom: 2px solid #ccc;">Action</th>
+                <th style="padding: 12px; border-bottom: 2px solid #ccc; border-right: 1px solid #ddd;">Status</th>
+                <th style="padding: 12px; border-bottom: 2px solid #ccc; text-align:center;">view</th>
             </tr>
         </thead>
          
@@ -20,11 +21,14 @@
                 <td style="padding: 15px; border-right: 1px solid #ddd; color: #2980b9;">{{ order.customer_email }}</td>
                 <td style="padding: 15px; border-right: 1px solid #ddd; color: #16a085;">{{ order.shipping_address.address }}</td>
                 <td style="padding: 15px; border-right: 1px solid #ddd; color: #8e44ad;">{{ order.date_ordered }}</td>
+                <td style="padding: 15px; border-right: 1px solid #ddd; color: #8e44ad;">{{ order.status}}</td>
                 <td style="padding: 15px; text-align: center;">
-                    <button data-order-id="{{ order.id }}" class="view-order-btn" 
-                        style="background-color: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 14px;">
-                        View Order
-                    </button>
+                    <a href="{% url 'order-details' order.id %}">
+                        <button data-order-id="{{ order.id }}" class="view-order-btn" 
+                            style="background-color: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                            View Order
+                        </button>
+                    </a>
                 </td>
             </tr>
             {% endfor %}
@@ -33,32 +37,6 @@
         
     </table>
     
-    <script>
-
-    const viewOrderButton = document.querySelectorAll(".view-order-btn");
-    console.log(viewOrderButton)
-
-    viewOrderButton.forEach(button => {
-        button.addEventListener('click', function () {
-            const orderId = this.getAttribute('data-order-id');
-            console.log('Order ID:', orderId);
-
-            var url=`/order-details`
-            fetch(url, {
-                method: "POST",
-                headers: {
-                    'X-CSRFToken':csrftoken,
-                }, 
-                body: JSON.stringify({
-                    "id": orderId
-                })
-            }).then(res => {
-                console.log(res)
-                })
-            })
-            // Add your logic to handle the order view here
-    });
-    </script>
 </div>
 
 {% endblock %}

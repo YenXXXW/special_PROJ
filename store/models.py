@@ -93,7 +93,22 @@ class Order (models.Model):
 class ShopOrder(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='shop_orders')
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='shop_orders')
-
+    # Status field with choices
+    PENDING = 'P'
+    DELIVERED = 'D'
+    CANCELED = 'C'
+    
+    STATUS_CHOICES = [
+        (PENDING, 'Pending'),
+        (DELIVERED, 'Delivered'),
+        (CANCELED, 'Canceled'),
+    ]
+    
+    status = models.CharField(
+        max_length=1,
+        choices=STATUS_CHOICES,
+        default=PENDING,
+    )
     class Meta:
         unique_together = ('order', 'shop')
 
