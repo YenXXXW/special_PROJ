@@ -16,7 +16,10 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.contrib.auth.views import PasswordResetConfirmView
 from django.urls import reverse_lazy
+from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
+import uuid
+from django.urls import reverse
 
 # Create your views here.
 
@@ -102,7 +105,24 @@ def checkout(request):
     order = data['order']
     items = data['items']
 
-    context={'items':items, 'order':order,'cartItems':cartItems}  
+    
+    host = request.get_host()
+     
+    paypal_checkout = {
+    'business': settings.PAYPAL_RECEIVER_EMAIL,
+    'amount': order.get_cart_total,
+    'item_name': f"Order {order.id}",
+    'invoice': str(uuid.uuid4()),
+    'currency_code': 'USD',
+    'notify_url': f'http://{host}{reverse("paypal-ipn")}',
+    'return_url': f'http://{host}{reverse("payment-success", kwargs={"order_id": order.id})}',
+    'cancel_url': f'http://{host}{reverse("payment-failed", kwargs={"order_id": order.id})}',
+    
+    }
+    paypal_payment = PayPalPaymentsForm(initial=paypal_checkout)
+        
+
+    context={'items':items, 'order':order,'cartItems':cartItems,'paypal': paypal_payment}  
     
     return render(request, 'store/checkout.html', context)
 
@@ -130,45 +150,29 @@ def updateItem(request):
 
 
 
+
+
 def processOrder(request):
-    transcation_id =datetime.datetime.now().timestamp()
+    transaction_id = datetime.datetime.now().timestamp()
     data = json.loads(request.body)
+    
     if request.user.is_authenticated:
         customer = request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, complete=False)
-
-       
     else:
-        print('User is not logged in')
-
-        print('COOKIES:',request.COOKIES)
         name = data['form']['name']
         email = data['form']['email']
-
         cookieData = cookieCart(request)
         items = cookieData['items']
-        
-        customer, created = Customer.objects.get_or_create(
-            email=email,
-            )
+        customer, created = Customer.objects.get_or_create(email=email)
         customer.name = name
         customer.save()
-
-        order = Order.objects.create(
-            customer=customer,
-            complete=False,
-            )
+        order = Order.objects.create(customer=customer, complete=False)
         for item in items:
             product = Product.objects.get(id=item['product']['id'])
-
-            orderItem = OrderItem.objects.create(
-                product=product,
-                order=order,
-                quantity= item['quantity']
-            )
+            orderItem = OrderItem.objects.create(product=product, order=order, quantity=item['quantity'])
     insufficient_stock_items = []
-
-    # Check if each ordered item has enough stock
+    # Check stock availability
     for item in order.orderitem_set.all():
         product = item.product
         if product.quantity < item.quantity:
@@ -180,21 +184,25 @@ def processOrder(request):
             item.save()
             if product.quantity <= 0:
                 item.delete()
-           
 
-    # If there are any items with insufficient stock, return them to the frontend
     if insufficient_stock_items:
         return JsonResponse({'error': 'Not enough stock for some items', 'insufficient_items': insufficient_stock_items}, status=400)
-    total= float(data ['form']['total'])
-    order.transactoinId=transcation_id
+    
+    # If stock is sufficient, create PayPal payment
+    
+
+    total = float(data['form']['total'])
+    order.transaction_id = transaction_id
+
     if total == order.get_cart_total:
-        order.complete=True
+        order.complete = True
         for item in order.orderitem_set.all():
             product = item.product
             product.quantity -= item.quantity
             product.save()
-    order.save()
-    ShippingAddress.objects.create(
+        order.save()
+        
+        ShippingAddress.objects.create(
             customer=customer,
             order=order,
             address=data['shipping']['address'],
@@ -203,7 +211,8 @@ def processOrder(request):
             zipcode=data['shipping']['zipcode'],
         )
     
-    return JsonResponse('Payment complete', safe=False) 
+    return JsonResponse('Payment complete', safe=False)
+
 
 
 
@@ -288,4 +297,25 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     def form_valid(self, form):
         # Add any custom logic here if needed before saving the new password
         return super().form_valid(form)
+    
+def PaymentSuccessful(request, order_id):
+
+    items = OrderItem.objects.filter(order=order_id)
+    shippingAddress=ShippingAddress.objects.get(order=order_id)
+    order=Order.objects.get(id=order_id)
+    context={'items':items,'shippingAddress':shippingAddress,'order':order}
+
+    return render(request, 'store/payment-success.html', context)
+
+def paymentFailed(request, order_id):
+
+    order = Order.objects.get(id=order_id)
+    
+    for item in order.orderitem_set.all():
+        product = item.product
+        product.quantity += item.quantity  # Add back the quantity
+        product.save()
+
+    return render(request, 'store/payment_failed.html', {'order': order})
+
     
