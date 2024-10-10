@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'paypal.standard.ipn',
     'store.apps.StoreConfig',
 ]
 
@@ -138,7 +138,10 @@ AUTHENTICATION_BACKENDS = [
     'store.backends.EmailBackend',  # Your custom backend
     'django.contrib.auth.backends.ModelBackend'
 ]
+PAYPAL_RECEIVER_EMAIL = 'myanmarcane@business.example.com' # where cash is paid into
+PAYPAL_TEST = True
 
+PAYPAL_BUY_BUTTON_IMAGE = 'https://res.cloudinary.com/the-proton-guy/image/upload/v1685882223/paypal-PhotoRoom_v9pay7.png'
 # Example for Gmail SMTP
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

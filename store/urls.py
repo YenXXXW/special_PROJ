@@ -23,6 +23,8 @@ urlpatterns=[
     path('password_reset/', views.password_reset_request, name='password_reset'),
     path('reset/<uidb64>/<token>/', views.CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('delete-product', shopAdminProductsViews.deleteProduct, name='delete-product'),
+    path('payment-success/<int:order_id>/', views.PaymentSuccessful, name='payment-success'),
+    path('payment-failed/<int:order_id>/', views.paymentFailed, name='payment-failed'),
     path('get-orders/', shopAdminPanelOrderViews.getOrders, name="get-orders"),
     path('order-details', shopAdminPanelOrderViews.oderDetails, name="order-details")
 ]

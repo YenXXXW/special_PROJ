@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <title>Payment successful</title>
+</head>
+<body>
+    <h1>Payment successful for product</h1>
+   
+<div class="row">
+    
+    <div class="col-lg-6">
+        <div class="box-element">
+            <a class="btn btn-outline-dark" href="{% url 'store' %}">&#x2190; Back to Shopping</a>
+            <hr>
+            <h3>Order Summary</h3>
+            <hr>
+            {% for item in items %}
+            <div class="cart-row">
+                <div style="flex:1"><img class="row-image" src="{{item.product.imageURL}}"></div>
+                <div style="flex:1"><p>{{item.product.name}}</p></div>
+                <div style="flex:1"><p>${{item.product.price|floatformat:2}}</p></div>
+                <div style="flex:1"><p>x{{item.quantity}}</p></div>
+                <div style="flex:1"><p>{{ item.get_total}} Ks</p></div>
+            </div>
+            {% endfor %}
+            <h5>Items: {{order.get_cart_item}}</h5>
+            <h5>Total: ${{order.get_cart_total|floatformat:2}}</h5>
+            <div>Status:Paid</div>
+        </div>
+    </div>
+	<div class="col-lg-6">
+        <div class="box-element" id="form-wrapper">
+            
+                
+                <div id="shipping-info">
+                    <hr>
+                    <p>Shipping Information:</p>
+                    <hr>
+                    <div >
+                        Address:{{shippingAddress.address}}
+                    </div>
+                    <div >
+                        City:{{shippingAddress.city}}
+                    </div>
+                    <div >
+                        State{{shippingAddress.state}}
+                    </div>
+                    <div >
+                        Zip Code:{{shippingAddress.zipcode}}
+                    </div>
+                </div>
+
+               
+        </div>
+
+        
+    </div>
+</div>
+
+
+
+
+</body>
+</html>
