@@ -23,17 +23,14 @@ document.addEventListener('DOMContentLoaded', function() {
             // Handle the response data
             if (data.products) {
                 products = data.products
-                console.log('here is hte errpr')
                 updateProducts(products)
                 const searchedValue = sessionStorage.getItem('searchedValue')
                 if(searchedValue) {
-                    console.log("here exist the searchVale", searchedValue)
                     let searchedProducts
                     if (searchedValue === '')  searchedProducts = products
                     else{
                         searchedProducts = products.filter(product => product.name.includes(searchedValue))
                     }
-                    console.log(searchedProducts)
                     updateProducts(searchedProducts)
                 }
             } else {
@@ -98,17 +95,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 products = data.products
                 updateProducts(products)
                 
-            } else {
-                console.error('No products data received.');
             }
-        })
+         })
         .catch(error => {
             console.error('Error:', error);
         });
     }
 
     function updateProducts(products) {
-        console.log("this is inside the updateProducts", products)
         const productsContainer = document.getElementById('products-container');
         productsContainer.innerHTML = ''; // Clear existing products
         productsContainer.classList.add('col-lg-9')
@@ -124,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
             productElement.innerHTML = `
                 <div class="product">
                     <div class="product-img-container">
-                        <img src="{% static product.image_url %}" alt="${product.name}" class="product-img">
+                        <img src="${ product.image_url }" alt="${product.name}" class="product-img">
                     </div>
                     <h3 id="product-price">${product.name}</h3>
                         <p>${product.price} Ks</p>
@@ -154,7 +148,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchProduct = document.getElementById("navSearchInput")
     searchProduct.addEventListener('input', handleSearch)
     function handleSearch(){
-        console.log(searchProduct.value)
         sessionStorage.setItem('searchedValue', searchProduct.value)
         let searchedProducts
         if(searchProduct.value === ''){
@@ -162,7 +155,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             searchedProducts = products.filter(product => product.name.includes(searchProduct.value))
         }
-        console.log('suprise')
         updateProducts(searchedProducts)
     }
 
