@@ -66,12 +66,13 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <select id="shopSelect">
-          <option value="all">all</option>
+        <select id="shopSelect" style="background-color: black; color: white; border: none; padding: 8px 12px; border-radius: 5px;  cursor: pointer;">
+          <option value="all" style="background-color: black; color: white;">all</option>
           {% for shop in shops %}
-            <option value={{shop.id}}>{{ shop.name }}</option>
+              <option value="{{shop.id}}" style="background-color: black; color: white;">{{ shop.name }}</option>
           {% endfor %}
-        </select>
+      </select>
+      
         <form id="navSearch">
           <input type="search" placeholder="Search" id="navSearchInput" name="search" value="">
           <button type="submit">
