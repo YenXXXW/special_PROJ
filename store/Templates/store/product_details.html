@@ -6,22 +6,44 @@
 
 {% block content %}
 <section>
-    <div class="row g-5 px-5 mt-1">
-        <div class="col-md-6 col-lg-6 ">
-            <img src="{{product.imageURL}}" alt="{{ product.name }}"  class="product-img img-responsive">
+    <div class="row g-5 px-5 mt-1" style="display: flex; align-items: flex-start; gap: 20px;">
+        <!-- Product Image -->
+        <div class="col-md-6 col-lg-6" style="flex: 1; text-align: center;">
+            <img src="{{product.imageURL}}" alt="{{ product.name }}" 
+                 style="max-width: 100%; height: auto; max-height: 400px; object-fit: contain; border-radius: 10px;">
         </div>
-        <div class="col-md-6 col-lg-6 pt-5">
-            <h2>{{product.name}}</h2>
-            <p class="fs-5 price">{{product.price}} Ks<p>
-                <p id="decription">{{product.description}} </p>
-                <p class="otherAttributes mt-5"><span>color</span><span>{{product.color}}</span></p>
-                <p class="otherAttributes"><span>brand</span><span>{{product.brand}}</span></p>
-                <p class="otherAttributes"><span>quality</span><span>{{product.quality}}</span></p>
-                <p class="otherAttributes"><span>weight</span><span>{{product.weight}} kg</span></p>
-            <button  data-product="{{product.id}}" data-action="add" class="update-cart add_to_cart_button " >Add to cart</button>
+    
+        <!-- Product Details -->
+        <div class="col-md-6 col-lg-6 pt-5" style="flex: 1;">
+            <h2 style="font-size: 28px; margin-bottom: 10px;">{{product.name}}</h2>
+            <p class="fs-5 price" style="font-size: 24px; color: #B08504; font-weight: bold;">{{product.price}} Ks</p>
+            <p id="description" style="font-size: 16px; color: #555; margin-bottom: 20px;">{{product.description}}</p>
+    
+            <div style="margin-bottom: 20px;">
+                <p class="otherAttributes" style="font-size: 16px; display: flex; justify-content: space-between;">
+                    <span style="font-weight: bold;">Color</span><span>{{product.color}}</span>
+                </p>
+                <p class="otherAttributes" style="font-size: 16px; display: flex; justify-content: space-between;">
+                    <span style="font-weight: bold;">Brand</span><span>{{product.brand}}</span>
+                </p>
+                <p class="otherAttributes" style="font-size: 16px; display: flex; justify-content: space-between;">
+                    <span style="font-weight: bold;">Quality</span><span>{{product.quality}}</span>
+                </p>
+                <p class="otherAttributes" style="font-size: 16px; display: flex; justify-content: space-between;">
+                    <span style="font-weight: bold;">Weight</span><span>{{product.weight}} kg</span>
+                </p>
+            </div>
+    
+            <!-- Add to Cart Button -->
+            <button data-product="{{product.id}}" data-action="add" class="update-cart add_to_cart_button" 
+                    style="padding: 10px 20px; background-color: #B08504; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">
+                Add to cart
+            </button>
         </div>
     </div>
-    <div class="blackblock">
+    
+    <!-- Extra Styling for the Black Block -->
+    <div class="blackblock" style="margin-top: 30px; background-color: #333; height: 100px; border-radius: 10px;">
     </div>
-</section>
+    
 {% endblock content %}
