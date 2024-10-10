@@ -104,10 +104,8 @@ def checkout(request):
     cartItems = data['cartItems']
     order = data['order']
     items = data['items']
-
     
     host = request.get_host()
-     
     paypal_checkout = {
     'business': settings.PAYPAL_RECEIVER_EMAIL,
     'amount': order.get_cart_total,
