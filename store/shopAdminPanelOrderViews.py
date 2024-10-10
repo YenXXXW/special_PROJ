@@ -1,3 +1,4 @@
+import json
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
@@ -37,5 +38,46 @@ def getOrders(request):
     }
     return render(request, 'store/adminPanel/viewOrders.html', context)
 
+@require_POST
+def oderDetails(request):
+    try:
+        data = json.loads(request.body) 
+        orderId =  request.POST.get('id')
+        #     return JsonResponse({"message": "order id is required"}, status=400)
+        # order = ShopOrder.objects.filter(id=orderId)
+        # print(order)
+        # products = [
+        #     {
+        #         'product_name': item.product.name if item.product else 'No product',
+        #         'quantity': item.quantity,
+        #         'total_price': item.get_total
+        #     } for item in order.orderitem_set.all()
+        # ]
+        # print(products)
 
+    except json.JSONDecodeError: 
+        return JsonResponse({"message": "Invalid JSON"}, status=400)
+    orderId = data.get('id')
+    if not orderId:
+        return JsonResponse({"message": "Order ID is required"}, status=400)
+    shop_order= ShopOrder.objects.get(id=orderId)
+    if not shop_order:
+        return JsonResponse({"message": "Order not found"}, status=404)
+    order_items = OrderItem.objects.filter(order=shop_order.order, order__shop_orders__shop=shop_order.shop)
 
+        # Prepare product data to return in JSON format
+    product_data = [
+        {
+            "product_id": item.product.id,
+            "name": item.product.name,
+            "price": item.product.price,
+            "quantity": item.quantity,
+            "total": item.get_total,
+        }
+        for item in order_items if item.product
+    ]
+    print(product_data)
+    context = {
+        "prodcut_data": product_data
+    }
+    return render(request, 'store/adminPanel/orderDetails.html', context)

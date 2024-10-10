@@ -16,11 +16,36 @@
                 <td>{{ order.customer_email }}</td>
                 <td>{{ order.shipping_address.address}}</td>
                 <td>{{ order.date_ordered}}</td>
-                <td><button data-order-id={{ order.id}}>View Order</td></td>
+                <td><button data-order-id={{ order.id}} class="view-order-btn">View Order</td></td>
             </tr>
             {% endfor %}
     </table>
-    <script></script>
+    <script>
+
+    const viewOrderButton = document.querySelectorAll(".view-order-btn");
+    console.log(viewOrderButton)
+
+    viewOrderButton.forEach(button => {
+        button.addEventListener('click', function () {
+            const orderId = this.getAttribute('data-order-id');
+            console.log('Order ID:', orderId);
+
+            var url=`/order-details`
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    'X-CSRFToken':csrftoken,
+                }, 
+                body: JSON.stringify({
+                    "id": orderId
+                })
+            }).then(res => {
+                console.log(res)
+                })
+            })
+            // Add your logic to handle the order view here
+    });
+    </script>
 </div>
 
 {% endblock %}

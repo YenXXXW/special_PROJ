@@ -106,7 +106,7 @@ def edit_product(request, product_id):
             product.save()
 
         except:
-            return JsonResponse({"error"})        
+            return JsonResponse({"error": "an unknown error ocurred"}, status=400)        
         return JsonResponse({"message": "product updated successfully"},status=200)
     
     product = Product.objects.get(pk=product_id)
