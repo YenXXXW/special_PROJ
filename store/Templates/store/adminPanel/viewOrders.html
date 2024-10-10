@@ -2,24 +2,37 @@
 {% load static %}
 {% block shopAdminPanelContent %}
 <div>
-    <table>
-        <th>
-            <td>Name</td>
-            <td>Email</td>
-            <td>Address</td>
-            <td>Date ordered</td>
-            <td>Action</td>
-        </th>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px; font-family: Arial, sans-serif; font-size: 14px;">
+        <thead>
+            <tr style="background-color: #f2f2f2; text-align: left;">
+                <th style="padding: 12px; border-bottom: 2px solid #ccc; border-right: 1px solid #ddd;">Name</th>
+                <th style="padding: 12px; border-bottom: 2px solid #ccc; border-right: 1px solid #ddd;">Email</th>
+                <th style="padding: 12px; border-bottom: 2px solid #ccc; border-right: 1px solid #ddd;">Address</th>
+                <th style="padding: 12px; border-bottom: 2px solid #ccc; border-right: 1px solid #ddd;">Date ordered</th>
+                <th style="padding: 12px; border-bottom: 2px solid #ccc;">Action</th>
+            </tr>
+        </thead>
+        
+        <tbody>
             {% for order in order_data %}
-            <tr>
-                <td>{{ order.customer_name}}</td>
-                <td>{{ order.customer_email }}</td>
-                <td>{{ order.shipping_address.address}}</td>
-                <td>{{ order.date_ordered}}</td>
-                <td><button data-order-id={{ order.id}} class="view-order-btn">View Order</td></td>
+            <tr style="border-bottom: 1px solid #ddd; text-align: left; background-color: #fff; transition: background-color 0.3s ease;">
+                <td style="padding: 15px; border-right: 1px solid #ddd; color: #2c3e50; font-weight: bold;">{{ order.customer_name }}</td>
+                <td style="padding: 15px; border-right: 1px solid #ddd; color: #2980b9;">{{ order.customer_email }}</td>
+                <td style="padding: 15px; border-right: 1px solid #ddd; color: #16a085;">{{ order.shipping_address.address }}</td>
+                <td style="padding: 15px; border-right: 1px solid #ddd; color: #8e44ad;">{{ order.date_ordered }}</td>
+                <td style="padding: 15px; text-align: center;">
+                    <button data-order-id="{{ order.id }}" class="view-order-btn" 
+                        style="background-color: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                        View Order
+                    </button>
+                </td>
             </tr>
             {% endfor %}
+        </tbody>
+        
+        
     </table>
+    
     <script>
 
     const viewOrderButton = document.querySelectorAll(".view-order-btn");
