@@ -38,7 +38,6 @@ def getOrders(request):
     }
     return render(request, 'store/adminPanel/viewOrders.html', context)
 
-@require_POST
 def oderDetails(request, order_id):
     shop_order= ShopOrder.objects.get(id=order_id)
     if not shop_order:
