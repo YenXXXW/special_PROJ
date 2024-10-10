@@ -153,7 +153,7 @@ def updateItem(request):
 def processOrder(request):
     transaction_id = datetime.datetime.now().timestamp()
     data = json.loads(request.body)
-    
+    shops = set()
     if request.user.is_authenticated:
         customer = request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, complete=False)
@@ -173,6 +173,9 @@ def processOrder(request):
     # Check stock availability
     for item in order.orderitem_set.all():
         product = item.product
+        
+        if product.shop:
+                shops.add(product.shop)
         if product.quantity < item.quantity:
             insufficient_stock_items.append({
                 'product': product.name,
@@ -198,16 +201,18 @@ def processOrder(request):
             product = item.product
             product.quantity -= item.quantity
             product.save()
-        order.save()
-        
-        ShippingAddress.objects.create(
-            customer=customer,
-            order=order,
-            address=data['shipping']['address'],
-            city=data['shipping']['city'],
-            state=data['shipping']['state'],
-            zipcode=data['shipping']['zipcode'],
-        )
+
+    order.save()
+    for shop in shops:
+            ShopOrder.objects.create(order=order, shop=shop)
+    ShippingAddress.objects.create(
+        customer=customer,
+        order=order,
+        address=data['shipping']['address'],
+        city=data['shipping']['city'],
+        state=data['shipping']['state'],
+        zipcode=data['shipping']['zipcode'],
+    )
     
     return JsonResponse('Payment complete', safe=False)
 
