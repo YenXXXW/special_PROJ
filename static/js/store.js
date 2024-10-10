@@ -104,6 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateProducts(products) {
         const productsContainer = document.getElementById('products-container');
+        console.log(products)
         productsContainer.innerHTML = ''; // Clear existing products
         productsContainer.classList.add('col-lg-9')
         productsContainer.id = "products-container"
@@ -153,8 +154,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if(searchProduct.value === ''){
             searchedProducts = products
         } else {
+            console.log("pr", products)
             searchedProducts = products.filter(product => product.name.includes(searchProduct.value))
         }
+        console.log("se",searchedProducts)
         updateProducts(searchedProducts)
     }
 
