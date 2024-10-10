@@ -113,5 +113,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const searchedProducts = products.filter(product => product.name.includes(searchProduct.value) )
         updateProducts(searchedProducts)
     }
+
 });
 

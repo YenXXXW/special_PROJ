@@ -133,7 +133,7 @@ from django.shortcuts import render, redirect
 def processOrder(request):
     transaction_id = datetime.datetime.now().timestamp()
     data = json.loads(request.body)
-
+    shops = set()
     if request.user.is_authenticated:
         customer = request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, complete=False)
@@ -164,6 +164,9 @@ def processOrder(request):
     # Check if each ordered item has enough stock
     for item in order.orderitem_set.all():
         product = item.product
+        
+        if product.shop:
+                shops.add(product.shop)
         if product.quantity < item.quantity:
             insufficient_stock_items.append({
                 'product': product.name,
@@ -183,11 +186,12 @@ def processOrder(request):
         # Reduce stock for each product in the order
         for item in order.orderitem_set.all():
             product = item.product
-            product.stock -= item.quantity
+            product.quantity -= item.quantity
             product.save()
 
     order.save()
-
+    for shop in shops:
+            ShopOrder.objects.create(order=order, shop=shop)
     ShippingAddress.objects.create(
         customer=customer,
         order=order,
