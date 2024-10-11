@@ -28,5 +28,5 @@ urlpatterns=[
     path('payment-success/<int:order_id>/', views.PaymentSuccessful, name='payment-success'),
     path('payment-failed/<int:order_id>/', views.paymentFailed, name='payment-failed'),
     path('get-orders/', shopAdminPanelOrderViews.getOrders, name="get-orders"),
-    path('order-details', shopAdminPanelOrderViews.oderDetails, name="order-details")
+    path('order-details/<int:order_id>', shopAdminPanelOrderViews.oderDetails, name="order-details")
 ]

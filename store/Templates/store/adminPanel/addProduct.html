@@ -103,6 +103,7 @@
             if(res.status === 200) {
                 window.alert("Product addded successfully")
                 productContainerForm.reset()
+                productImage.src = "{% static 'image/product-placeholder.png' %}"; // Reset to the placeholder image
             } 
         })
         })
