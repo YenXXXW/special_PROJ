@@ -69,10 +69,11 @@
                             "price": "{{ product.price }}",
                             "category": "{{product.category_id}}",
                             "shop_id": "{{product.shop_id}}",
-                            "image_url": "{{product.image_url}}"
+                            "image_url": "{{product.imageURL}}"
                         }{% if not forloop.last %},{% endif %}
                     {% endfor %}
                 ];
+                console.log(productData)
                 // Use the products data in your JavaScript
             </script>
         </div>

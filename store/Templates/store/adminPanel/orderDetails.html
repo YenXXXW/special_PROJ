@@ -1,9 +1,29 @@
-
 {% extends "store/adminPanel/adminPanelLayout.html" %}
 {% load static %}
 {% block shopAdminPanelContent %}
 <div>
-    hello
+    <table>
+        <thead>
+            <tr style="background-color: #f2f2f2; text-align: left;">
+                <th style="padding: 12px; border-bottom: 2px solid #ccc; border-right: 1px solid #ddd;">Image</th>
+                <th style="padding: 12px; border-bottom: 2px solid #ccc; border-right: 1px solid #ddd;">Name</th>
+                <th style="padding: 12px; border-bottom: 2px solid #ccc; border-right: 1px solid #ddd;">Price</th>
+                <th style="padding: 12px; border-bottom: 2px solid #ccc; border-right: 1px solid #ddd;">Quantity</th>
+                <th style="padding: 12px; border-bottom: 2px solid #ccc; border-right: 1px solid #ddd;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in product_data %}
+            <tr style="border-bottom: 1px solid #ddd; text-align: left; background-color: #fff; transition: background-color 0.3s ease;">
+                <td style="padding: 15px; border-right: 1px solid #ddd; color: #2c3e50; font-weight: bold;"><img src="{{ product.image}}" width='100'/></td>
+                <td style="padding: 15px; border-right: 1px solid #ddd; color: #2980b9;">{{ product.name}}</td>
+                <td style="padding: 15px; border-right: 1px solid #ddd; color: #16a085;">{{ product.price }}</td>
+                <td style="padding: 15px; border-right: 1px solid #ddd; color: #8e44ad;">{{ product.quantity }}</td>
+                <td style="padding: 15px; border-right: 1px solid #ddd; color: #8e44ad;">{{ product.total }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 {% endblock %}
