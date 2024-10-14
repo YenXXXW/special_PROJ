@@ -187,3 +187,23 @@ def deleteProduct(request):
 
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON"}, status=400)
+    
+
+def stockProductNoti(request):
+    if not hasattr(request.user, 'shop'):
+        return redirect('store')
+    shop = request.user.shop
+    noStockds = Product.objects.filter(shop=shop,quantity=0).order_by('-updated_at')
+    noStockProducts = [
+        {
+            "product_id": item.id,
+            'imageURL': item.imageURL,
+            "name": item.name,
+            "price": item.price,
+            "quantity": item.quantity,
+        }
+        for item in noStockds 
+    ]
+    context={'noStockProducts': noStockProducts}
+    print(noStockProducts)
+    return render(request, 'store/adminPanel/outOfStock.html',context)
