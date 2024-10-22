@@ -1,0 +1,4 @@
+pillow>=10.4.0
+Django>=5.0.6
+django-paypal>=2.1
+requests>=2.31.0
