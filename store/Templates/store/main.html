@@ -61,17 +61,20 @@
     </head>
     <body>
       
-      <nav class="navbar navbar-expand-lg navbar-dark ">
+      <nav class="navbar navbar-expand-lg navbar-dark " style="padding-left:3%; padding-right: 3%">
         <a class="navbar-brand" href="{% url 'store' %}">CANEecomm</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <select id="shopSelect" style="background-color: black; color: white; border: none; padding: 8px 12px; border-radius: 5px;  cursor: pointer;">
+        <div style="position: relative; margin-right: 2rem;">
+          <label style= "color: white;">select company</label>
+          <select id="shopSelect" style="position: absolute; bottom: -150%; left: 0; background-color: #3a3534; width: full;  color: white; border: none; padding: 8px 12px; border-radius: 5px;  cursor: pointer; font-size: small">
           <option value="all" style="background-color: black; color: white;">all</option>
           {% for shop in shops %}
               <option value="{{shop.id}}" style="background-color: black; color: white;">{{ shop.name }}</option>
           {% endfor %}
-        </select>
+          </select>
+        </div>
       
         <form id="navSearch">
           <input type="search" placeholder="Search" id="navSearchInput" name="search" value="">
