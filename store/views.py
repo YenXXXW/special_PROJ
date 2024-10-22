@@ -65,6 +65,7 @@ def store(request):
                     'price': product.price,
                     'image_url': product.image.url if product.image else None,
                     'description': product.description,
+                    'quantity': product.quantity,
                     'shop_id': product.shop.id if product.shop else None,
                     'category_id': product.category.id if product.category else None
                 }
@@ -295,11 +296,12 @@ def password_reset_request(request):
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     template_name = 'store/password_reset_confirm.html'
-    
+    success_url = reverse_lazy('password_reset_complete')
 
     def form_valid(self, form):
         # Add any custom logic here if needed before saving the new password
         return super().form_valid(form)
+
     
 def PaymentSuccessful(request, order_id):
 

@@ -2,47 +2,52 @@
 {% load static %}
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/shop_admin.module.css' %}">
-
 {% endblock %}
 
 {% block content %}
-<section style=background-image: url('{% static 'image/bg2.png' %}')>
+<section style="background-image: url('{% static 'image/bg2.png' %}')">
   <div class="container-fluid" style="padding: 0;">
     <div class="row" style="flex-wrap: nowrap;">
-      <div class="col-3" id="adminPanelLeftSide" style=" padding: 20px; min-height: 100vh; ">
+      <div class="col-3" id="adminPanelLeftSide" style="padding: 20px; min-height: 100vh;">
         <div id="products" class="item" style="margin-bottom: 15px;">
           <div class="dropdown">
-            <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none; ">
+            <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
               Products
             </a>
-            
-            <ul class="dropdown-menu" style=" padding: 10px; border: 1px solid #dee2e6;">
-              <li><a class="dropdown-item" href="{% url "get-products" %}" id="view-products" style="text-decoration: none; padding: 10px;">View Products</a></li>
-              <li><a class="dropdown-item" href="{% url "add-product" %}" id="add-product" style="text-decoration: none;  padding: 10px;">Add Product</a></li>
-              <li><a class="dropdown-item" href="#" style="text-decoration: none;  padding: 10px;">Something else here</a></li>
+            <ul class="dropdown-menu" style="padding: 10px; border: 1px solid #dee2e6;">
+              <li><a class="dropdown-item" href="{% url 'get-products' %}" id="view-products" style="text-decoration: none; padding: 10px;">View Products</a></li>
+              <li><a class="dropdown-item" href="{% url 'add-product' %}" id="add-product" style="text-decoration: none; padding: 10px;">Add Product</a></li>
+              <li><a class="dropdown-item" href="#" style="text-decoration: none; padding: 10px;">Something else here</a></li>
             </ul>
-          </div>             
+          </div>
         </div>
+
         <div id="orders" class="item" style="margin-bottom: 15px;">
           <div class="dropdown">
-            <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none; ">
+            <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
               Orders
             </a>
-              
-            <ul class="dropdown-menu" style=" padding: 10px; border: 1px solid #dee2e6;">
-              <li><a class="dropdown-item" href="{% url "get-orders" %}" id="getOrders" style="text-decoration: none;  padding: 10px;">Orders</a></li>
+            <ul class="dropdown-menu" style="padding: 10px; border: 1px solid #dee2e6;">
+              <li><a class="dropdown-item" href="{% url 'get-orders' %}" id="getOrders" style="text-decoration: none; padding: 10px;">Orders</a></li>
             </ul>
-          </div> 
+          </div>
+        </div>
+
+        <!-- New Out of Stock Products Div -->
+        <div id="outOfStockProducts" class="item" style="margin-bottom: 15px; display:flex;">
+          <a href="{% url 'stockNoti' %}" style="text-decoration: none; color: black;"">
+            Out of Stock Products
+          </a>
+          <p class="noti">0</p> <!-- This can be dynamically updated with the count -->
         </div>
       </div>
-      <div class="col-9" id="content" style="padding: 20px; ">
+
+      <div class="col-9" id="content" style="padding: 20px;">
         <div id="view-products-content"></div>
         {% block shopAdminPanelContent %}
-        
-        
         {% endblock shopAdminPanelContent %}
       </div>
     </div>
   </div>
-</section> 
+</section>
 {% endblock content %}

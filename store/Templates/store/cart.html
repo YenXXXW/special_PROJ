@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-lg-12">
         <div class="box-element">
-            <a  class="btn btn-outline-dark" href="{% url 'store' %}">&#x2190; Continue Shopping</a>
+            <a  class="btn btn-outline-dark"  href="{% url 'store' %}">&#x2190; Continue Shopping</a>
 
 				<br>
 				<br>
@@ -13,7 +13,7 @@
 						<th><h5>Items: <strong>{{order.get_cart_item}}</strong></h5></th>
 						<th><h5>Total:<strong> {{order.get_cart_total|floatformat:2}} Ks</strong></h5></th>
 						<th id="checkout-link">
-							<a  style="float:right; margin:5px;" class="btn btn-success" href="{% url 'checkout' %}">Checkout</a>
+							<a  style="float:right; margin:5px;" class="btn btn-success" id="checkout-btn" href="#">Checkout</a>
 						</th>
 					</tr>
 				</table>
@@ -56,6 +56,17 @@
 {
     document.getElementById('checkout-link').innerHTML=''
 }
+document.getElementById('checkout-btn').addEventListener('click', function(event) {
+    if (user != 'AnonymousUser') {
+        // User is authenticated, redirect to checkout
+        window.location.href = "{% url 'checkout' %}";
+    } else {
+        // User is not authenticated, prevent default behavior
+        event.preventDefault();
+        alert('You need to be logged in to proceed to checkout.');
+    }
+});
+
 
 
 </script>

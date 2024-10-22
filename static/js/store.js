@@ -125,6 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <h3 id="product-price">${product.name}</h3>
                         <p>${product.price} Ks</p>
+                        <p><small>Quantity: ${product.quantity}</small></p>
                     <div>
                         
                         <a href="product/${product.id}"><button class="view_button">View</button></a>

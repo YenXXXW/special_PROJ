@@ -43,7 +43,8 @@ def oderDetails(request, order_id):
     shop_order= ShopOrder.objects.get(id=order_id)
     if not shop_order:
         return JsonResponse({"message": "Order not found"}, status=404)
-    order_items = OrderItem.objects.filter(order=shop_order.order, order__shop_orders__shop=shop_order.shop)
+    order_items = OrderItem.objects.filter(order=shop_order.order, product__shop=shop_order.shop)
+
     print(f'order_items{order_items}')
         # Prepare product data to return in JSON format
     product_data = [
